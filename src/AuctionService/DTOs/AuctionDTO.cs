@@ -1,6 +1,6 @@
 namespace AuctionService.DTOs;
 using AuctionService.Entities;
-public class AuctionDTO
+public class AuctionDto
 {
     public Guid Id { get; set; }
     public decimal ReservePrice { get; set; }

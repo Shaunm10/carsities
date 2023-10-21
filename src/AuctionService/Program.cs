@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AuctionDbContext>(opt =>
 {
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
@@ -36,7 +37,7 @@ try
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Unable to inilize DB: ${ex.Message}");
+    Console.WriteLine($"Unable to initialize DB: ${ex.Message}");
 }
 
 app.Run();
