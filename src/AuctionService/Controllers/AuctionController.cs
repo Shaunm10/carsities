@@ -29,6 +29,7 @@ public class AuctionController : ControllerBase
             .OrderBy(x => x.Item.Make)
             .ToListAsync();
 
+        //return auctions;
         var response = this.mapper.Map<List<AuctionDto>>(auctions);
         return response;
     }

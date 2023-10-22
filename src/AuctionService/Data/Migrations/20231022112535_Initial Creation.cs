@@ -16,14 +16,15 @@ namespace AuctionService.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ReservedPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    ReservePrice = table.Column<decimal>(type: "numeric", nullable: false),
                     Seller = table.Column<string>(type: "text", nullable: true),
                     Winner = table.Column<string>(type: "text", nullable: true),
-                    SoldAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    CurrentHighBid = table.Column<decimal>(type: "numeric", nullable: false),
+                    SoldAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    CurrentHighBid = table.Column<decimal>(type: "numeric", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    AuctionEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

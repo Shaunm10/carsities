@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AuctionService.Data.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    [Migration("20231021004710_Make Auction.SoldAmount + Auction.CurrentHighBid nullable")]
-    partial class MakeAuctionSoldAmountAuctionCurrentHighBidnullable
+    [Migration("20231022112535_Initial Creation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -2,6 +2,7 @@ using System.Runtime;
 
 namespace AuctionService.Entities;
 
+// Principal (parent)
 public class Auction
 {
     public Guid Id { get; set; }
