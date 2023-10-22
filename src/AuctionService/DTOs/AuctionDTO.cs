@@ -10,8 +10,8 @@ public class AuctionDto
     public decimal? CurrentHighBid { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public String Status { get; set; }
-    public Item? Item { get; set; }
+    public string Status { get; set; }
+
     public DateTime AuctionEnd { get; set; }
 
     public string Make { get; set; }
