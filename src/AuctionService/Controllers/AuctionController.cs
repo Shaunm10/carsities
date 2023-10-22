@@ -46,9 +46,8 @@ public class AuctionController : ControllerBase
             return this.NotFound();
         }
 
-        return this.BadRequest("not done yet...");
-        //var response = this.mapper.Map<AuctionDto>();
+        var response = this.mapper.Map<AuctionDto>(auction);
 
-        //return response;
+        return response;
     }
 }
