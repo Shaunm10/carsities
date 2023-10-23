@@ -72,4 +72,35 @@ public class AuctionController : ControllerBase
 
         return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, auctionToReturn);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updatedAuctionDto)
+    {
+        var auction = await this.context.Auctions
+            .Include(x => x.Item)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (auction is null)
+        {
+            return this.NotFound();
+        }
+
+        // TODO: Verify user is the actual seller.
+
+        auction.Item.Make = updatedAuctionDto.Make ?? auction.Item.Make;
+        auction.Item.Model = updatedAuctionDto.Model ?? auction.Item.Model;
+        auction.Item.Color = updatedAuctionDto.Color ?? auction.Item.Color;
+        auction.Item.Mileage = updatedAuctionDto.Mileage ?? auction.Item.Mileage;
+        auction.Item.Year = updatedAuctionDto.Year ?? auction.Item.Year;
+
+        var anyChangesProcessed = await this.context.SaveChangesAsync() > 0;
+
+        if (anyChangesProcessed)
+        {
+            return this.Ok();
+        }
+
+        // something vague for the moment.
+        return this.BadRequest("No changes saved");
+    }
 }
