@@ -27,6 +27,7 @@ public class AuctionController : ControllerBase
             .Auctions
             .Include(x => x.Item)
             .OrderBy(x => x.Item.Make)
+            .ThenBy(x => x.Item.Model)
             .ToListAsync();
 
         var response = this.mapper.Map<List<AuctionDto>>(auctions);
@@ -49,5 +50,26 @@ public class AuctionController : ControllerBase
         var response = this.mapper.Map<AuctionDto>(auction);
 
         return response;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto createAuctionDto)
+    {
+        var auction = this.mapper.Map<Auction>(createAuctionDto);
+
+        // TODO: add current user as seller.
+        auction.Seller = "test";
+        this.context.Auctions.Add(auction);
+
+        var itemWasCreated = await this.context.SaveChangesAsync() > 0;
+
+        if (!itemWasCreated)
+        {
+            return this.BadRequest("Could not save item to database");
+        }
+
+        var auctionToReturn = this.mapper.Map<AuctionDto>(auction);
+
+        return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, auctionToReturn);
     }
 }
