@@ -103,4 +103,29 @@ public class AuctionController : ControllerBase
         // something vague for the moment.
         return this.BadRequest("No changes saved");
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAuction(Guid id)
+    {
+        var auctionToRemove = await this.context.Auctions
+            .FindAsync(id);
+
+        if (auctionToRemove is null)
+        {
+            return this.NotFound();
+        }
+
+        // TODO: verify user is also seller.
+
+        this.context.Auctions.Remove(auctionToRemove);
+
+        var changesWereSaved = await this.context.SaveChangesAsync() > 0;
+
+        if (!changesWereSaved)
+        {
+            return this.BadRequest("Delete unsuccessful");
+        }
+
+        return Ok();
+    }
 }
