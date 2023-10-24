@@ -1,4 +1,4 @@
-namespace SearchService.RequestHelpers;
+namespace SearchService.ViewModels;
 
 public class SearchRequest
 {
