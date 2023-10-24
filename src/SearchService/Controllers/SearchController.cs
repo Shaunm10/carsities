@@ -40,6 +40,17 @@ namespace SearchService.Controllers
                 _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
             };
 
+            if (!string.IsNullOrWhiteSpace(searchRequest.Seller))
+            {
+                query.Match(x => x.Seller == searchRequest.Seller);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchRequest.Winner))
+            {
+                query.Match(x => x.Winner == searchRequest.Winner);
+            }
+
+
             query.PageNumber(searchRequest.PageNumber);
             query.PageSize(searchRequest.PageSize);
 
