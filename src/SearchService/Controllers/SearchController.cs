@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
 using SearchService.Models;
+using SearchService.RequestHelpers;
+using ZstdSharp.Unsafe;
 
 namespace SearchService.Controllers
 {
@@ -10,21 +12,36 @@ namespace SearchService.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> SearchItems(string? searchTerm, int pageNumber = 1, int pageSize = 4)
+        public async Task<ActionResult<List<Item>>> SearchItems([FromQuery] SearchRequest searchRequest)
         {
-            var query = DB.PagedSearch<Item>();
+            var query = DB.PagedSearch<Item, Item>();
 
-            query.Sort(x => x.Ascending(a => a.Make));
+            //query.Sort(x => x.Ascending(a => a.Make));
 
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            if (!string.IsNullOrWhiteSpace(searchRequest.SearchTerm))
             {
                 query
-                    .Match(Search.Full, searchTerm)
+                    .Match(Search.Full, searchRequest.SearchTerm)
                     .SortByTextScore();
             }
 
-            query.PageNumber(pageNumber);
-            query.PageSize(pageSize);
+            query = searchRequest.OrderBy switch
+            {
+                "make" => query.Sort(x => x.Ascending(a => a.Make)),
+                "new" => query.Sort(x => x.Ascending(a => a.CreatedAt)),
+                _ => query.Sort(x => x.Ascending(a => a.AuctionEnd)),
+            };
+
+            query = searchRequest.FilterBy switch
+            {
+                "finished" => query.Match(x => x.AuctionEnd < DateTime.UtcNow),
+                "endingSoon" => query.Match(x => x.AuctionEnd < DateTime.UtcNow.AddHours(6)
+                    && x.AuctionEnd > DateTime.UtcNow),
+                _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
+            };
+
+            query.PageNumber(searchRequest.PageNumber);
+            query.PageSize(searchRequest.PageSize);
 
             var result = await query.ExecuteAsync();
             return this.Ok(new
