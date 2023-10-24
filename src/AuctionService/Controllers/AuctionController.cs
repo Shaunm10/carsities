@@ -35,16 +35,6 @@ public class AuctionController : ControllerBase
         }
         return await query.ProjectTo<AuctionDto>(this.mapper.ConfigurationProvider)
             .ToListAsync();
-
-        // var auctions = await this.context
-        //     .Auctions
-        //     .Include(x => x.Item)
-        //     .OrderBy(x => x.Item.Make)
-        //     .ThenBy(x => x.Item.Model)
-        //     .ToListAsync();
-
-        // var response = this.mapper.Map<List<AuctionDto>>(auctions);
-        // return response;
     }
 
     [HttpGet("{id}")]
