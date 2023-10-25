@@ -26,9 +26,12 @@ namespace SearchService.Data
             var httpClient = scope.ServiceProvider.GetRequiredService<AuctionSvcHttpClient>();
 
             var items = await httpClient.GetItemsForSearchDb();
-            Console.WriteLine(items.Count + " returned from the auction service");
+            Console.WriteLine(items?.Count + " returned from the auction service");
 
-            if (items.Count >)
+            if (items?.Count > 0)
+            {
+                await DB.SaveAsync(items);
+            }
 
 
             // if (count == 0)
@@ -36,16 +39,16 @@ namespace SearchService.Data
             //     Console.WriteLine("No data found in MongoDb, adding seed data...");
             //     var itemData = await File.ReadAllTextAsync("Data/Auctions.json");
 
-                //     var options = new JsonSerializerOptions
-                //     {
-                //         PropertyNameCaseInsensitive = true
-                //     };
+            //     var options = new JsonSerializerOptions
+            //     {
+            //         PropertyNameCaseInsensitive = true
+            //     };
 
-                //     var items = JsonSerializer.Deserialize<List<Item>>(itemData, options);
-                //     await DB.SaveAsync(items);
-                //     Console.WriteLine("Data seeded successfully.");
+            //     var items = JsonSerializer.Deserialize<List<Item>>(itemData, options);
+            //     await DB.SaveAsync(items);
+            //     Console.WriteLine("Data seeded successfully.");
 
-                // }
+            // }
         }
     }
 }
