@@ -1,11 +1,8 @@
 using System.Net;
-using MongoDB.Driver;
-using MongoDB.Entities;
 using Polly;
 using Polly.Extensions.Http;
 using SearchService.Business;
 using SearchService.Data;
-using SearchService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +29,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// start this polling after the app has come online.
 app.Lifetime.ApplicationStarted.Register(async () =>
 {
     try
     {
-
         await DbInitializer.InitDb(app);
     }
     catch (Exception ex)
