@@ -26,3 +26,7 @@ Run docker compose file in detached mode
 | --------------- | --------------------- |
 | Auction Service | http://localhost:7001 |
 | Search Service  | http://localhost:7002 |
+
+## Management Urls
+
+RabbitMQ: http://localhost:15672/ (guest/guest in firefox)
