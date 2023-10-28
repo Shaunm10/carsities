@@ -3,6 +3,8 @@ using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MassTransit;
+using MessageContracts.Auction;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +16,11 @@ public class AuctionController : ControllerBase
 {
     private readonly IMapper mapper;
     private readonly AuctionDbContext context;
+    private readonly IPublishEndpoint publishEndpoint;
 
-    public AuctionController(AuctionDbContext context, IMapper mapper)
+    public AuctionController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
+        this.publishEndpoint = publishEndpoint;
         this.context = context;
         this.mapper = mapper;
     }
@@ -71,9 +75,15 @@ public class AuctionController : ControllerBase
             return this.BadRequest("Could not save item to database");
         }
 
+        var newAuction = this.mapper.Map<AuctionDto>(auction);
+
+
+        // call to the service bus
+        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
+
         var auctionToReturn = this.mapper.Map<AuctionDto>(auction);
 
-        return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, auctionToReturn);
+        return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, newAuction);
     }
 
     [HttpPut("{id}")]
