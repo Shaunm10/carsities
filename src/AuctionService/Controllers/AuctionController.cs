@@ -68,18 +68,16 @@ public class AuctionController : ControllerBase
         auction.Seller = "test";
         this.context.Auctions.Add(auction);
 
+        var newAuction = this.mapper.Map<AuctionDto>(auction);
+
+        // call to the service bus
+        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
         var itemWasCreated = await this.context.SaveChangesAsync() > 0;
 
         if (!itemWasCreated)
         {
             return this.BadRequest("Could not save item to database");
         }
-
-        var newAuction = this.mapper.Map<AuctionDto>(auction);
-
-
-        // call to the service bus
-        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
 
         var auctionToReturn = this.mapper.Map<AuctionDto>(auction);
 

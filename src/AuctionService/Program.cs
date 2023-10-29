@@ -16,6 +16,16 @@ builder.Services.AddDbContext<AuctionDbContext>(opt =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMassTransit(x =>
 {
+
+    // Configures Mass Transit to   have an 'outbox', to queue messages
+    // that couldn't be delivered yet. 
+    x.AddEntityFrameworkOutbox<AuctionDbContext>(o =>
+    {
+        // will look every 10 secs to see what it needs to deliver
+        o.QueryDelay = TimeSpan.FromSeconds(10);
+        o.UsePostgres();
+        o.UseBusOutbox();
+    });
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);
