@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using AuctionService.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
