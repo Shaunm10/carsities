@@ -1,6 +1,6 @@
 namespace MessageContracts.Auction;
 
-public class AuctionCreation
+public class AuctionCreated
 {
     public Guid Id { get; set; }
     public decimal? ReservePrice { get; set; }

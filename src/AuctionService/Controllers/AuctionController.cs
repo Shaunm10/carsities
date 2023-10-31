@@ -71,7 +71,7 @@ public class AuctionController : ControllerBase
         var newAuction = this.mapper.Map<AuctionDto>(auction);
 
         // call to the service bus
-        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreation>(newAuction));
+        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
         var itemWasCreated = await this.context.SaveChangesAsync() > 0;
 
         if (!itemWasCreated)
