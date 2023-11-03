@@ -104,14 +104,15 @@ public class AuctionController : ControllerBase
         auction.Item.Mileage = updatedAuctionDto.Mileage ?? auction.Item.Mileage;
         auction.Item.Year = updatedAuctionDto.Year ?? auction.Item.Year;
 
+        var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(auction);
+        await this.publishEndpoint.Publish(updatedAuctionEvent);
+
         var anyChangesProcessed = await this.context.SaveChangesAsync() > 0;
 
         if (anyChangesProcessed)
         {
-            var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(updatedAuctionDto);
             updatedAuctionEvent.Id = id.ToString();
 
-            await this.publishEndpoint.Publish(updatedAuctionEvent);
             return this.Ok();
         }
 
@@ -134,17 +135,17 @@ public class AuctionController : ControllerBase
 
         this.context.Auctions.Remove(auctionToRemove);
 
+        await this.publishEndpoint.Publish(new AuctionDeleted
+        {
+            Id = id.ToString()
+        });
+
         var changesWereSaved = await this.context.SaveChangesAsync() > 0;
 
         if (!changesWereSaved)
         {
             return this.BadRequest("Delete unsuccessful");
         }
-
-        await this.publishEndpoint.Publish(new AuctionDeleted
-        {
-            Id = id.ToString()
-        });
 
         return Ok();
     }
