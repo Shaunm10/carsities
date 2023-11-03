@@ -6,6 +6,11 @@ namespace SearchService.Business;
 
 public class SearchService : ISearchService
 {
+    public async Task DeleteAuctionAsync(string? id)
+    {
+        await DB.DeleteAsync<Item>(x => x.ID == id);
+    }
+
     public async Task<SearchResponse> SearchAsync(SearchRequest searchRequest)
     {
         var query = DB.PagedSearch<Item, Item>();

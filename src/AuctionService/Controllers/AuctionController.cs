@@ -108,6 +108,10 @@ public class AuctionController : ControllerBase
 
         if (anyChangesProcessed)
         {
+            var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(updatedAuctionDto);
+            updatedAuctionEvent.Id = id.ToString();
+
+            await this.publishEndpoint.Publish(updatedAuctionEvent);
             return this.Ok();
         }
 
@@ -136,6 +140,11 @@ public class AuctionController : ControllerBase
         {
             return this.BadRequest("Delete unsuccessful");
         }
+
+        await this.publishEndpoint.Publish(new AuctionDeleted
+        {
+            Id = id.ToString()
+        });
 
         return Ok();
     }
