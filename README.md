@@ -30,3 +30,6 @@ Run docker compose file in detached mode
 ## Management Urls
 
 RabbitMQ: http://localhost:15672/ (guest/guest in firefox)
+
+
+## Identity Server
