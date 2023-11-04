@@ -33,3 +33,6 @@ RabbitMQ: http://localhost:15672/ (guest/guest in firefox)
 
 
 ## Identity Server
+
+Adding templates to .net core
+> dotnet new --install Duende.IdentityServer.Templates
