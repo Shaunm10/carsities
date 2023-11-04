@@ -1,23 +1,23 @@
 namespace MessageContracts.Auction;
 
-public class AuctionCreated
+public record AuctionCreated
 {
-    public Guid Id { get; set; }
-    public decimal? ReservePrice { get; set; }
-    public string? Seller { get; set; } = null;
-    public string? Winner { get; set; } = null;
-    public decimal? SoldAmount { get; set; }
-    public decimal? CurrentHighBid { get; set; }
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public string? Status { get; set; }
+    public Guid Id { get; init; }
+    public decimal? ReservePrice { get; init; }
+    public string? Seller { get; init; } = null;
+    public string? Winner { get; init; } = null;
+    public decimal? SoldAmount { get; init; }
+    public decimal? CurrentHighBid { get; init; }
+    public DateTime? CreatedAt { get; init; }
+    public DateTime? UpdatedAt { get; init; }
+    public string? Status { get; init; }
 
-    public DateTime? AuctionEnd { get; set; }
+    public DateTime? AuctionEnd { get; init; }
 
-    public string? Make { get; set; }
+    public string? Make { get; init; }
     public string? Model { get; set; }
-    public int? Year { get; set; }
-    public string? Color { get; set; }
-    public int? Mileage { get; set; }
-    public string? ImageUrl { get; set; }
+    public int? Year { get; init; }
+    public string? Color { get; init; }
+    public int? Mileage { get; init; }
+    public string? ImageUrl { get; init; }
 }

@@ -1,16 +1,16 @@
 namespace MessageContracts.Auction;
 
-public class AuctionUpdated
+public record AuctionUpdated
 {
     public string? Id { get; set; }
 
-    public string? Make { get; set; }
+    public string? Make { get; init; }
 
-    public string? Model { get; set; }
+    public string? Model { get; init; }
 
-    public int? Year { get; set; }
+    public int? Year { get; init; }
 
-    public string? Color { get; set; }
+    public string? Color { get; init; }
 
-    public int? Mileage { get; set; }
+    public int? Mileage { get; init; }
 }

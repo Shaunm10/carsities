@@ -11,11 +11,15 @@ public class AuctionDeletedConsumer : IConsumer<AuctionDeleted>
     public AuctionDeletedConsumer(ISearchService searchService)
     {
         this.searchService = searchService;
-
     }
 
     public async Task Consume(ConsumeContext<AuctionDeleted> context)
     {
-        await this.searchService.DeleteAuctionAsync(context.Message.Id);
+        var isAcknowledged = await this.searchService.DeleteAuctionAsync(context.Message.Id);
+
+        if (!isAcknowledged)
+        {
+            throw new MessageException(typeof(AuctionDeleted), "Problem deleting record.");
+        }
     }
 }

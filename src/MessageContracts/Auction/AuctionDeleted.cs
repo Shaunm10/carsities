@@ -1,6 +1,6 @@
 namespace MessageContracts.Auction;
 
-public class AuctionDeleted
+public record AuctionDeleted
 {
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 }

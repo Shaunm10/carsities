@@ -6,9 +6,11 @@ namespace SearchService.Business;
 
 public class SearchService : ISearchService
 {
-    public async Task DeleteAuctionAsync(string? id)
+    public async Task<bool> DeleteAuctionAsync(string? id)
     {
-        await DB.DeleteAsync<Item>(x => x.ID == id);
+        var result = await DB.DeleteAsync<Item>(x => x.ID == id);
+
+        return result.IsAcknowledged;
     }
 
     public async Task<SearchResponse> SearchAsync(SearchRequest searchRequest)
