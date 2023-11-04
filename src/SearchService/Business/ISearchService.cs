@@ -4,5 +4,6 @@ namespace SearchService.Business;
 
 public interface ISearchService
 {
-    public Task<SearchResponse> SearchAsync(SearchRequest searchRequest);
+    Task<bool> DeleteAuctionAsync(string? id);
+    Task<SearchResponse> SearchAsync(SearchRequest searchRequest);
 }

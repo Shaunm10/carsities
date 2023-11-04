@@ -1,7 +1,9 @@
 using System.Net;
+using MassTransit;
 using Polly;
 using Polly.Extensions.Http;
 using SearchService.Business;
+using SearchService.Consumers;
 using SearchService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +12,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ISearchService, SearchService.Business.SearchService>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddHttpClient<AuctionSvcHttpClient>().AddPolicyHandler(GetPolicy());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ReceiveEndpoint("search-auction-creation", e =>
+        {
+            // retry 5 times, every 5 seconds.
+            e.UseMessageRetry(r => r.Interval(5, 5));
+
+            // only do this for the auctionCreated consumer.
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

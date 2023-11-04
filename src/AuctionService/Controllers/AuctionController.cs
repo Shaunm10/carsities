@@ -3,6 +3,8 @@ using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using MassTransit;
+using MessageContracts.Auction;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +16,11 @@ public class AuctionController : ControllerBase
 {
     private readonly IMapper mapper;
     private readonly AuctionDbContext context;
+    private readonly IPublishEndpoint publishEndpoint;
 
-    public AuctionController(AuctionDbContext context, IMapper mapper)
+    public AuctionController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
+        this.publishEndpoint = publishEndpoint;
         this.context = context;
         this.mapper = mapper;
     }
@@ -64,6 +68,10 @@ public class AuctionController : ControllerBase
         auction.Seller = "test";
         this.context.Auctions.Add(auction);
 
+        var newAuction = this.mapper.Map<AuctionDto>(auction);
+
+        // call to the service bus
+        await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
         var itemWasCreated = await this.context.SaveChangesAsync() > 0;
 
         if (!itemWasCreated)
@@ -73,7 +81,7 @@ public class AuctionController : ControllerBase
 
         var auctionToReturn = this.mapper.Map<AuctionDto>(auction);
 
-        return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, auctionToReturn);
+        return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, newAuction);
     }
 
     [HttpPut("{id}")]
@@ -96,10 +104,15 @@ public class AuctionController : ControllerBase
         auction.Item.Mileage = updatedAuctionDto.Mileage ?? auction.Item.Mileage;
         auction.Item.Year = updatedAuctionDto.Year ?? auction.Item.Year;
 
+        var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(auction);
+        await this.publishEndpoint.Publish(updatedAuctionEvent);
+
         var anyChangesProcessed = await this.context.SaveChangesAsync() > 0;
 
         if (anyChangesProcessed)
         {
+            updatedAuctionEvent.Id = id.ToString();
+
             return this.Ok();
         }
 
@@ -121,6 +134,11 @@ public class AuctionController : ControllerBase
         // TODO: verify user is also seller.
 
         this.context.Auctions.Remove(auctionToRemove);
+
+        await this.publishEndpoint.Publish(new AuctionDeleted
+        {
+            Id = id.ToString()
+        });
 
         var changesWereSaved = await this.context.SaveChangesAsync() > 0;
 

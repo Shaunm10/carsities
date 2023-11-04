@@ -10,13 +10,13 @@ namespace SearchService.Controllers
     [Route("api/Search")]
     public class SearchController : ControllerBase
     {
-        public ISearchService searchService { get; }
+        private readonly ISearchService searchService;
 
         public SearchController(ISearchService searchService)
         {
             this.searchService = searchService;
-
         }
+
         [HttpGet]
         public async Task<ActionResult<SearchResponse>> SearchItems([FromQuery] SearchRequest searchRequest)
         {
