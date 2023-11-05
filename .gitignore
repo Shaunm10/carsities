@@ -475,3 +475,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+src/IdentityService/keys/is-signing-key-8392D7B3A319188658361A5429694290.json
