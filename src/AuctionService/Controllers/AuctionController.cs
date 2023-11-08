@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MassTransit;
 using MessageContracts.Auction;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,13 +60,13 @@ public class AuctionController : ControllerBase
         return response;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto createAuctionDto)
     {
         var auction = this.mapper.Map<Auction>(createAuctionDto);
 
-        // TODO: add current user as seller.
-        auction.Seller = "test";
+        auction.Seller = this.User?.Identity?.Name;
         this.context.Auctions.Add(auction);
 
         var newAuction = this.mapper.Map<AuctionDto>(auction);
@@ -84,6 +85,7 @@ public class AuctionController : ControllerBase
         return this.CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, newAuction);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updatedAuctionDto)
     {
@@ -96,7 +98,11 @@ public class AuctionController : ControllerBase
             return this.NotFound();
         }
 
-        // TODO: Verify user is the actual seller.
+        // Verify user is the actual seller.
+        if (auction.Seller != this.User?.Identity?.Name)
+        {
+            return this.Forbid();
+        }
 
         auction.Item.Make = updatedAuctionDto.Make ?? auction.Item.Make;
         auction.Item.Model = updatedAuctionDto.Model ?? auction.Item.Model;
@@ -120,18 +126,24 @@ public class AuctionController : ControllerBase
         return this.BadRequest("No changes saved");
     }
 
+    [Authorize]
+
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
         var auctionToRemove = await this.context.Auctions
             .FindAsync(id);
 
+        // Verify user is the actual seller.
+        if (auctionToRemove.Seller != this.User?.Identity?.Name)
+        {
+            return this.Forbid();
+        }
+
         if (auctionToRemove is null)
         {
             return this.NotFound();
         }
-
-        // TODO: verify user is also seller.
 
         this.context.Auctions.Remove(auctionToRemove);
 
