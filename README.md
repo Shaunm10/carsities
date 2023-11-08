@@ -26,7 +26,15 @@ Run docker compose file in detached mode
 | --------------- | --------------------- |
 | Auction Service | http://localhost:7001 |
 | Search Service  | http://localhost:7002 |
+| Identity Service| http://localhost:5000 |
+
 
 ## Management Urls
 
 RabbitMQ: http://localhost:15672/ (guest/guest in firefox)
+
+
+## Identity Server
+
+Adding templates to .net core
+> dotnet new --install Duende.IdentityServer.Templates
