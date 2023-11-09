@@ -27,6 +27,8 @@ Run docker compose file in detached mode
 | Auction Service  | http://localhost:7001 |
 | Search Service   | http://localhost:7002 |
 | Identity Service | http://localhost:5000 |
+| Gateway Service | http://localhost:6001 |
+
 
 ## Management Urls
 
