@@ -7,15 +7,17 @@ namespace AuctionService.Consumers;
 
 public class AuctionFinishedConsumer : IConsumer<AuctionFinished>
 {
-    private readonly AuctionDbContext context;
-    public AuctionFinishedConsumer(AuctionDbContext context)
+    private readonly AuctionDbContext dbContext;
+    public AuctionFinishedConsumer(AuctionDbContext dbContext)
     {
-        this.context = context;
+        this.dbContext = dbContext;
     }
 
     public async Task Consume(ConsumeContext<AuctionFinished> context)
     {
-        var auction = await this.context.Auctions.FindAsync(context.Message.AuctionId);
+        Console.WriteLine("--> consuming auction finished");
+
+        var auction = await this.dbContext.Auctions.FindAsync(context.Message.AuctionId);
 
         if (auction is not null)
         {
@@ -35,7 +37,7 @@ public class AuctionFinishedConsumer : IConsumer<AuctionFinished>
                 auction.Status = Status.ReserveNotMet;
             }
 
-            await this.context.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }
