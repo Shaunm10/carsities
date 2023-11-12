@@ -1,6 +1,4 @@
-﻿
-
-namespace MessageContracts.Auction;
+﻿namespace MessageContracts.Auction;
 
 public record AuctionFinished
 {
