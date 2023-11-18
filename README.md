@@ -20,6 +20,12 @@ Run docker compose file in detached mode
 
 > docker compose up -d
 
+Runs the dockerfile to build an image
+> docker build -f src/AuctionService/Dockerfile -t testing_123 .
+
+Run the Docker image
+> docker run testing_123
+
 ## Service Urls
 
 | Service Name     | Url                   |

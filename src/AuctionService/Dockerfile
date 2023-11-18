@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 as build
-WORKDIR /src
+WORKDIR /app
 EXPOSE 80
 
 # copy all .csproj files and restore packages. Use of the same COPY command
@@ -8,6 +8,26 @@ COPY Carsities.sln Carsities.sln
 COPY src/AuctionService/AuctionService.csproj src/AuctionService/AuctionService.csproj
 COPY src/SearchService/SearchService.csproj src/SearchService/SearchService.csproj
 COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.csproj
+COPY src/MessageContracts/MessageContracts.csproj src/MessageContracts/MessageContracts.csproj
+COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
+
+# restore packages
+RUN dotnet restore Carsities.sln
+
+# Copy the app folders over
+
+COPY src/AuctionService src/AuctionService
+COPY src/MessageContracts src/MessageContracts
+
+WORKDIR /app/src/AuctionService
+RUN dotnet publish -c Release -o /app/src/out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build /app/src/out .
+ENTRYPOINT [ "dotnet","AuctionService.dll" ]
+
 
 
 
