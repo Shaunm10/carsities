@@ -26,6 +26,9 @@ Runs the dockerfile to build an image
 Run the Docker image
 > docker run testing_123
 
+Build a docker image via the docker compose
+> docker compose build auction-svc
+
 ## Service Urls
 
 | Service Name     | Url                   |
