@@ -50,3 +50,6 @@ Adding templates to .net core
 > dotnet new --install Duende.IdentityServer.Templates
 
 ## Gateway Info
+
+## Testing
+
