@@ -30,6 +30,13 @@ internal static class HostingExtensions
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
 
+                // if this is running as Docker
+                if (builder.Environment.IsEnvironment("Docker"))
+                {
+                    // than hard code the issueUri so the gateway proxy works.
+                    options.IssuerUri = "identity-svc";
+                }
+
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 //options.EmitStaticAudienceClaim = true;
             })

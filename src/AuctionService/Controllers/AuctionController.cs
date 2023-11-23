@@ -132,7 +132,12 @@ public class AuctionController : ControllerBase
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
         var auctionToRemove = await this.context.Auctions
-            .FindAsync(id);
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (auctionToRemove is null)
+        {
+            return this.NotFound();
+        }
 
         // Verify user is the actual seller.
         if (auctionToRemove.Seller != this.User?.Identity?.Name)
