@@ -18,9 +18,11 @@ public class AuctionController : ControllerBase
     private readonly IMapper mapper;
     private readonly AuctionDbContext context;
     private readonly IPublishEndpoint publishEndpoint;
+    private readonly IAuctionRepository auctionRepository;
 
-    public AuctionController(AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public AuctionController(IAuctionRepository auctionRepository, AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
+        this.auctionRepository = auctionRepository;
         this.publishEndpoint = publishEndpoint;
         this.context = context;
         this.mapper = mapper;
@@ -37,6 +39,7 @@ public class AuctionController : ControllerBase
         {
             query = query
                 .Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
+
         }
         return await query.ProjectTo<AuctionDto>(this.mapper.ConfigurationProvider)
             .ToListAsync();
