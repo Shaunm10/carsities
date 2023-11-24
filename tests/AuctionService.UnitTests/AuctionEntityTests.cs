@@ -1,7 +1,7 @@
 using AuctionService.Entities;
-using Eric.Morrison;
 using FluentAssert;
 using Microsoft.AspNetCore.Http;
+using RandomTestValues;
 
 namespace AuctionService.UnitTests;
 
@@ -13,7 +13,7 @@ public class AuctionEntityTests
         // arrange:
         var auction = new Auction
         {
-            ReservePrice = RandomValue.NextInt32(1, 9999)
+            ReservePrice = RandomValue.Int(9999, 1)
         };
 
         // act:
