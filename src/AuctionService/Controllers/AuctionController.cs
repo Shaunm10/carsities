@@ -120,8 +120,8 @@ public class AuctionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
-        var auctionToRemove = await this.context.Auctions
-            .FirstOrDefaultAsync(x => x.Id == id);
+
+        var auctionToRemove = await this.auctionRepository.GetAuctionEntityById(id);
 
         if (auctionToRemove is null)
         {
@@ -139,14 +139,14 @@ public class AuctionController : ControllerBase
             return this.NotFound();
         }
 
-        this.context.Auctions.Remove(auctionToRemove);
+        this.auctionRepository.RemoveAuction(auctionToRemove);
 
         await this.publishEndpoint.Publish(new AuctionDeleted
         {
             Id = id.ToString()
         });
 
-        var changesWereSaved = await this.context.SaveChangesAsync() > 0;
+        var changesWereSaved = await this.auctionRepository.SaveChangesAsync();
 
         if (!changesWereSaved)
         {
