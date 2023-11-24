@@ -19,17 +19,21 @@ public class AuctionRepository : IAuctionRepository
 
     public void AddAuction(Auction auction)
     {
-        throw new NotImplementedException();
+        this.context.Auctions.Add(auction);
     }
 
-    public Task<AuctionDto> GetAuctionByIdAsync(Guid id)
+    public async Task<AuctionDto?> GetAuctionByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await this.context.Auctions
+            .ProjectTo<AuctionDto>(this.mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<Auction> GetAuctionEntityById(Guid Id)
+    public async Task<Auction?> GetAuctionEntityById(Guid id)
     {
-        var auction = this.context.Auctions.Include(x => x.Item).FirstOrDefaultAsync(x => x.Id == Id);
+        var auction = await this.context.Auctions
+            .Include(x => x.Item)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return auction;
     }
