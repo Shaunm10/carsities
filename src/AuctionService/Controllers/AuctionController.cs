@@ -16,51 +16,39 @@ namespace AuctionService.Controllers;
 public class AuctionController : ControllerBase
 {
     private readonly IMapper mapper;
-    private readonly AuctionDbContext context;
     private readonly IPublishEndpoint publishEndpoint;
     private readonly IAuctionRepository auctionRepository;
 
-    public AuctionController(IAuctionRepository auctionRepository, AuctionDbContext context, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public AuctionController(IAuctionRepository auctionRepository, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         this.auctionRepository = auctionRepository;
         this.publishEndpoint = publishEndpoint;
-        this.context = context;
         this.mapper = mapper;
     }
 
     [HttpGet]
     public async Task<List<AuctionDto>> GetAllAuctions(string? date)
     {
-        var query = this.context.Auctions
-            .OrderBy(x => x.Item.Make)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(date))
-        {
-            query = query
-                .Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime()) > 0);
-
-        }
-        return await query.ProjectTo<AuctionDto>(this.mapper.ConfigurationProvider)
-            .ToListAsync();
+        var auctions = await this.auctionRepository.GetAuctionsAsync(date);
+        return auctions;
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<AuctionDto>> GetAuctionById(Guid Id)
     {
-        var auction = await this.context
-            .Auctions
-            .Include(x => x.Item)
-            .FirstOrDefaultAsync(x => x.Id == Id);
+        // var auction = await this.context
+        //     .Auctions
+        //     .Include(x => x.Item)
+        //     .FirstOrDefaultAsync(x => x.Id == Id);
+
+        var auction = await this.auctionRepository.GetAuctionByIdAsync(Id);
 
         if (auction is null)
         {
             return this.NotFound();
         }
 
-        var response = this.mapper.Map<AuctionDto>(auction);
-
-        return response;
+        return auction;
     }
 
     [Authorize]
@@ -70,13 +58,13 @@ public class AuctionController : ControllerBase
         var auction = this.mapper.Map<Auction>(createAuctionDto);
 
         auction.Seller = this.User?.Identity?.Name;
-        this.context.Auctions.Add(auction);
+        this.auctionRepository.AddAuction(auction);
 
         var newAuction = this.mapper.Map<AuctionDto>(auction);
 
         // call to the service bus
         await this.publishEndpoint.Publish(this.mapper.Map<AuctionCreated>(newAuction));
-        var itemWasCreated = await this.context.SaveChangesAsync() > 0;
+        var itemWasCreated = await this.auctionRepository.SaveChangesAsync();
 
         if (!itemWasCreated)
         {
@@ -92,9 +80,7 @@ public class AuctionController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updatedAuctionDto)
     {
-        var auction = await this.context.Auctions
-            .Include(x => x.Item)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var auction = await this.auctionRepository.GetAuctionEntityById(id);
 
         if (auction is null)
         {
@@ -116,7 +102,7 @@ public class AuctionController : ControllerBase
         var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(auction);
         await this.publishEndpoint.Publish(updatedAuctionEvent);
 
-        var anyChangesProcessed = await this.context.SaveChangesAsync() > 0;
+        var anyChangesProcessed = await this.auctionRepository.SaveChangesAsync();
 
         if (anyChangesProcessed)
         {
