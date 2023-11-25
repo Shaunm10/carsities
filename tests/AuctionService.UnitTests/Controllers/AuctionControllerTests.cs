@@ -136,4 +136,41 @@ public class AuctionControllerTests
         this.auctionRepository.Verify(x => x.AddAuction(It.IsAny<Auction>()), Times.Once);
 
     }
+
+
+    public async Task UpdateAuction_AuctionNotFound_ReturnsNotFound()
+    {
+        // arrange:
+
+        // act:
+
+        // assert:
+    }
+
+    public async Task UpdateAuction_UserIsNotSeller_ReturnsForbidden()
+    {
+        // arrange:
+
+        // act:
+
+        // assert:
+    }
+
+    public async Task UpdateAuction_SaveSuccessful_ReturnsOk()
+    {
+        // arrange:
+
+        // act:
+
+        // assert:
+    }
+
+    public async Task UpdateAuction_SaveUnsuccessful_ReturnsBadRequest()
+    {
+        // arrange:
+
+        // act:
+
+        // assert:
+    }
 }
