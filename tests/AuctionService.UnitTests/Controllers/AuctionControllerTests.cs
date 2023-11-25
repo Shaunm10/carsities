@@ -40,7 +40,7 @@ public class AuctionControllerTests
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User =
+                    User = Helpers.GetClaimsPrincipal()
                 }
             }
         };
