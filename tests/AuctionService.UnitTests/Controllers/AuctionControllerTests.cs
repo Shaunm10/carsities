@@ -1,11 +1,13 @@
 using AuctionService.Controllers;
 using AuctionService.Data;
 using AuctionService.DTOs;
+using AuctionService.Entities;
 using AuctionService.RequestHelpers;
 using AutoFixture;
 using AutoMapper;
 using FluentAssertions;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RandomTestValues;
@@ -32,7 +34,16 @@ public class AuctionControllerTests
         }).CreateMapper().ConfigurationProvider;
 
         this.mapper = new Mapper(mockMapper);
-        this.controllerUnderTest = new AuctionController(this.auctionRepository.Object, this.mapper, this.publishEndpoint.Object);
+        this.controllerUnderTest = new AuctionController(this.auctionRepository.Object, this.mapper, this.publishEndpoint.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User =
+                }
+            }
+        };
     }
 
     [Fact]
@@ -89,18 +100,24 @@ public class AuctionControllerTests
     {
         // Arrange:
         var auctionToCreate = this.fixture.Create<CreateAuctionDto>();
-        this.controllerUnderTest.User
-        this.auctionRepository
-            .Setup(x => x.GetAuctionByIdAsync(auctionId))
-            .ReturnsAsync(auction);
+        this.auctionRepository.Setup(x => x.AddAuction(It.IsAny<Auction>()));
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+        this.controllerUnderTest.ControllerContext = new ControllerContext
+        {
+            //HttpContext
+        };
 
         // Act:
-        var response = await this.controllerUnderTest.CreateAuction(auctionId);
+        var response = await this.controllerUnderTest.CreateAuction(auctionToCreate);
+        var createdActionResult = response.Result as CreatedAtActionResult;
 
         // Assert:
-        response.Should().NotBeNull();
-        response.Value.Should().BeOfType<AuctionDto>();
-        response.Value.Should().BeEquivalentTo(auction);
+        createdActionResult.Should().NotBeNull();
+        createdActionResult.ActionName.Should().Be("GetAuctionById");
+        createdActionResult.Value.Should().BeOfType<AuctionDto>();
+        // response.Should().NotBeNull();
+        // response.Value.Should().BeOfType<AuctionDto>();
+        // response.Value.Should().BeEquivalentTo(auction);
     }
 
     [Fact]
