@@ -6,6 +6,7 @@ using AutoFixture;
 using AutoMapper;
 using FluentAssertions;
 using MassTransit;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RandomTestValues;
 
@@ -47,5 +48,39 @@ public class AuctionControllerTests
 
         // Assert:
         response.Should().BeEquivalentTo(auctions);
+    }
+
+    [Fact]
+    public async Task GetAuctionById_WrongId_Returns404()
+    {
+        // Arrange:
+        var auctionId = RandomValue.Guid();
+        this.auctionRepository.Setup(x => x.GetAuctionByIdAsync(auctionId)).ReturnsAsync(value: null);
+
+        // Act:
+        var response = await this.controllerUnderTest.GetAuctionById(auctionId);
+
+        // Assert:
+        response.Should().NotBeNull();
+        response.Result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task GetAuctionById_CorrectId_ReturnsAuction()
+    {
+        // Arrange:
+        var auctionId = RandomValue.Guid();
+        var auction = this.fixture.Create<AuctionDto>();
+        this.auctionRepository
+            .Setup(x => x.GetAuctionByIdAsync(auctionId))
+            .ReturnsAsync(auction);
+
+        // Act:
+        var response = await this.controllerUnderTest.GetAuctionById(auctionId);
+
+        // Assert:
+        response.Should().NotBeNull();
+        response.Value.Should().BeOfType<AuctionDto>();
+        response.Value.Should().BeEquivalentTo(auction);
     }
 }

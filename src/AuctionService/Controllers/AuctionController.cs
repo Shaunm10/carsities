@@ -36,11 +36,6 @@ public class AuctionController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<AuctionDto>> GetAuctionById(Guid Id)
     {
-        // var auction = await this.context
-        //     .Auctions
-        //     .Include(x => x.Item)
-        //     .FirstOrDefaultAsync(x => x.Id == Id);
-
         var auction = await this.auctionRepository.GetAuctionByIdAsync(Id);
 
         if (auction is null)
