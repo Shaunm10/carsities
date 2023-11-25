@@ -83,4 +83,42 @@ public class AuctionControllerTests
         response.Value.Should().BeOfType<AuctionDto>();
         response.Value.Should().BeEquivalentTo(auction);
     }
+
+    [Fact]
+    public async Task CreateAuction_WithValidAuctionCreateDto_ReturnsCreatedAtActionResult()
+    {
+        // Arrange:
+        var auctionToCreate = this.fixture.Create<CreateAuctionDto>();
+        this.controllerUnderTest.User
+        this.auctionRepository
+            .Setup(x => x.GetAuctionByIdAsync(auctionId))
+            .ReturnsAsync(auction);
+
+        // Act:
+        var response = await this.controllerUnderTest.CreateAuction(auctionId);
+
+        // Assert:
+        response.Should().NotBeNull();
+        response.Value.Should().BeOfType<AuctionDto>();
+        response.Value.Should().BeEquivalentTo(auction);
+    }
+
+    [Fact]
+    public async Task CreateAuction_SavedFailed_ReturnsBadRequest()
+    {
+        // Arrange:
+        var auctionId = RandomValue.Guid();
+        var auction = this.fixture.Create<AuctionDto>();
+        this.auctionRepository
+            .Setup(x => x.GetAuctionByIdAsync(auctionId))
+            .ReturnsAsync(auction);
+
+        // Act:
+        var response = await this.controllerUnderTest.GetAuctionById(auctionId);
+
+        // Assert:
+        response.Should().NotBeNull();
+        response.Value.Should().BeOfType<AuctionDto>();
+        response.Value.Should().BeEquivalentTo(auction);
+    }
 }
