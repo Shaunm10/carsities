@@ -20,7 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssert" Version="1.0.0.11" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
 
   </ItemGroup>
   <ItemGroup>

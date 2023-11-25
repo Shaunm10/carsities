@@ -93,11 +93,14 @@ public class AuctionController : ControllerBase
             return this.Forbid();
         }
 
-        auction.Item.Make = updatedAuctionDto.Make ?? auction.Item.Make;
-        auction.Item.Model = updatedAuctionDto.Model ?? auction.Item.Model;
-        auction.Item.Color = updatedAuctionDto.Color ?? auction.Item.Color;
-        auction.Item.Mileage = updatedAuctionDto.Mileage ?? auction.Item.Mileage;
-        auction.Item.Year = updatedAuctionDto.Year ?? auction.Item.Year;
+        if (auction.Item is not null)
+        {
+            auction.Item.Make = updatedAuctionDto.Make ?? auction.Item.Make;
+            auction.Item.Model = updatedAuctionDto.Model ?? auction.Item.Model;
+            auction.Item.Color = updatedAuctionDto.Color ?? auction.Item.Color;
+            auction.Item.Mileage = updatedAuctionDto.Mileage ?? auction.Item.Mileage;
+            auction.Item.Year = updatedAuctionDto.Year ?? auction.Item.Year;
+        }
 
         var updatedAuctionEvent = this.mapper.Map<AuctionUpdated>(auction);
         await this.publishEndpoint.Publish(updatedAuctionEvent);

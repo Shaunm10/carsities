@@ -4,9 +4,8 @@ using AuctionService.DTOs;
 using AuctionService.RequestHelpers;
 using AutoFixture;
 using AutoMapper;
-using FluentAssert;
+using FluentAssertions;
 using MassTransit;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RandomTestValues;
 
@@ -47,6 +46,6 @@ public class AuctionControllerTests
         var response = await this.controllerUnderTest.GetAllAuctions(date);
 
         // Assert:
-        response.ShouldBeEqualTo(auctions);
+        response.Should().BeEquivalentTo(auctions);
     }
 }

@@ -1,5 +1,5 @@
 using AuctionService.Entities;
-using FluentAssert;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using RandomTestValues;
 
@@ -20,7 +20,7 @@ public class AuctionEntityTests
         var result = auction.HasReservedPrice();
 
         // assert:
-        result.ShouldBeTrue();
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -36,6 +36,6 @@ public class AuctionEntityTests
         var result = auction.HasReservedPrice();
 
         // assert:
-        result.ShouldBeFalse();
+        result.Should().BeFalse();
     }
 }

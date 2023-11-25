@@ -40,8 +40,9 @@ public class AuctionRepository : IAuctionRepository
 
     public async Task<List<AuctionDto>> GetAuctionsAsync(string? date)
     {
+        // Found conflicts between different versions of "Microsoft.EntityFrameworkCore" that could not be resolved. [/Users/shaunsargent/src/learning/Carsities/repo/tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj]
         var query = this.context.Auctions
-            .OrderBy(x => x.Item.Make)
+            .OrderBy(x => x.Item!.Make)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(date))
