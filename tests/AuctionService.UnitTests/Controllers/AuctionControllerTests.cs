@@ -102,10 +102,6 @@ public class AuctionControllerTests
         var auctionToCreate = this.fixture.Create<CreateAuctionDto>();
         this.auctionRepository.Setup(x => x.AddAuction(It.IsAny<Auction>()));
         this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
-        this.controllerUnderTest.ControllerContext = new ControllerContext
-        {
-            //HttpContext
-        };
 
         // Act:
         var response = await this.controllerUnderTest.CreateAuction(auctionToCreate);
@@ -115,27 +111,29 @@ public class AuctionControllerTests
         createdActionResult.Should().NotBeNull();
         createdActionResult.ActionName.Should().Be("GetAuctionById");
         createdActionResult.Value.Should().BeOfType<AuctionDto>();
-        // response.Should().NotBeNull();
-        // response.Value.Should().BeOfType<AuctionDto>();
-        // response.Value.Should().BeEquivalentTo(auction);
+        var auctionDto = createdActionResult.Value as AuctionDto;
+        auctionDto.Should().NotBeNull();
+        auctionDto.Seller.Should().Be("test");
+        this.auctionRepository.Verify(x => x.AddAuction(It.IsAny<Auction>()), Times.Once);
+
     }
 
     [Fact]
     public async Task CreateAuction_SavedFailed_ReturnsBadRequest()
     {
         // Arrange:
-        var auctionId = RandomValue.Guid();
-        var auction = this.fixture.Create<AuctionDto>();
-        this.auctionRepository
-            .Setup(x => x.GetAuctionByIdAsync(auctionId))
-            .ReturnsAsync(auction);
+        var auctionToCreate = this.fixture.Create<CreateAuctionDto>();
+        this.auctionRepository.Setup(x => x.AddAuction(It.IsAny<Auction>()));
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
 
         // Act:
-        var response = await this.controllerUnderTest.GetAuctionById(auctionId);
+        var response = await this.controllerUnderTest.CreateAuction(auctionToCreate);
+        var badRequestActionResult = response.Result as BadRequestObjectResult;
 
         // Assert:
-        response.Should().NotBeNull();
-        response.Value.Should().BeOfType<AuctionDto>();
-        response.Value.Should().BeEquivalentTo(auction);
+        badRequestActionResult.Should().NotBeNull();
+        badRequestActionResult.Value.Should().Be("Could not save item to database");
+        this.auctionRepository.Verify(x => x.AddAuction(It.IsAny<Auction>()), Times.Once);
+
     }
 }
