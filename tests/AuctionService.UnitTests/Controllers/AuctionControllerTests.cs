@@ -131,9 +131,10 @@ public class AuctionControllerTests
 
         // Act:
         var response = await this.controllerUnderTest.CreateAuction(auctionToCreate);
-        var badRequestActionResult = response.Result as BadRequestObjectResult;
 
         // Assert:
+        response.Result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestActionResult = response.Result as BadRequestObjectResult;
         badRequestActionResult.Should().NotBeNull();
         badRequestActionResult.Value.Should().Be("Could not save item to database");
         this.auctionRepository.Verify(x => x.AddAuction(It.IsAny<Auction>()), Times.Once);
@@ -154,6 +155,7 @@ public class AuctionControllerTests
 
         // assert:
         result.Should().NotBeNull();
+        result.Should().BeOfType<NotFoundResult>();
         var notFoundResult = result as NotFoundResult;
         notFoundResult.Should().NotBeNull();
         notFoundResult.StatusCode.Should().Be(404);
@@ -188,8 +190,13 @@ public class AuctionControllerTests
             Item = new Item()
         };
 
-        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
-        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+        this.auctionRepository
+            .Setup(x => x.GetAuctionEntityById(auctionId))
+            .ReturnsAsync(auction);
+
+        this.auctionRepository
+            .Setup(x => x.SaveChangesAsync())
+            .ReturnsAsync(true);
 
         // act:
         var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
@@ -215,8 +222,12 @@ public class AuctionControllerTests
         auction.Item = this.fixture.Build<Item>().Without(x => x.Auction).Create();
         auction.Seller = this.userName;
 
-        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
-        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+        this.auctionRepository
+            .Setup(x => x.GetAuctionEntityById(auctionId))
+            .ReturnsAsync(auction);
+        this.auctionRepository
+            .Setup(x => x.SaveChangesAsync())
+            .ReturnsAsync(false);
 
         // act:
         var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
