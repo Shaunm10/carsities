@@ -205,13 +205,33 @@ public class AuctionControllerTests
 
     }
 
-    // [Fact]
-    // public Task UpdateAuction_SaveUnsuccessful_ReturnsBadRequest()
-    // {
-    //     // arrange:
+    [Fact]
+    public async Task UpdateAuction_SaveUnsuccessful_ReturnsBadRequest()
+    {
+        // arrange:
+        var auctionId = RandomValue.Guid();
+        var updatedAuction = this.fixture.Create<UpdateAuctionDto>();
+        var auction = new Auction
+        {
+            Seller = this.userName,
+            Item = new Item()
+        };
 
-    //     // act:
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
 
-    //     // assert:
-    // }
+        // act:
+        var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
+
+        // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestObjectResult = result as BadRequestObjectResult;
+        badRequestObjectResult.Value.Should().Be("No changes saved");
+        auction.Item.Make.Should().Be(updatedAuction.Make);
+        auction.Item.Model.Should().Be(updatedAuction.Model);
+        auction.Item.Color.Should().Be(updatedAuction.Color);
+        auction.Item.Mileage.Should().Be(updatedAuction.Mileage);
+        auction.Item.Year.Should().Be(updatedAuction.Year);
+    }
 }
