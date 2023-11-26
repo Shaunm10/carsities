@@ -1,8 +1,11 @@
+using System.Runtime.CompilerServices;
 using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,3 +88,6 @@ catch (Exception ex)
 }
 
 app.Run();
+
+// to allow for Integration
+public partial class Program { }
