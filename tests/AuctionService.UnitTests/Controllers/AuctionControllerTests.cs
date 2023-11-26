@@ -116,7 +116,7 @@ public class AuctionControllerTests
         createdActionResult.Value.Should().BeOfType<AuctionDto>();
         var auctionDto = createdActionResult.Value as AuctionDto;
         auctionDto.Should().NotBeNull();
-        auctionDto.Seller.Should().Be("test");
+        auctionDto.Seller.Should().Be(this.userName);
         this.auctionRepository.Verify(x => x.AddAuction(It.IsAny<Auction>()), Times.Once);
 
     }
@@ -211,11 +211,9 @@ public class AuctionControllerTests
         // arrange:
         var auctionId = RandomValue.Guid();
         var updatedAuction = this.fixture.Create<UpdateAuctionDto>();
-        var auction = new Auction
-        {
-            Seller = this.userName,
-            Item = new Item()
-        };
+        var auction = this.fixture.Build<Auction>().Without(x => x.Item).Create();
+        auction.Item = this.fixture.Build<Item>().Without(x => x.Auction).Create();
+        auction.Seller = this.userName;
 
         this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
         this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
@@ -233,5 +231,80 @@ public class AuctionControllerTests
         auction.Item.Color.Should().Be(updatedAuction.Color);
         auction.Item.Mileage.Should().Be(updatedAuction.Mileage);
         auction.Item.Year.Should().Be(updatedAuction.Year);
+    }
+
+    [Fact]
+    public async Task DeleteAuction_NoAuction_ReturnsNotFound()
+    {
+        // arrange:
+        var auctionId = RandomValue.Guid();
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(value: null);
+
+        // act:
+        var result = await this.controllerUnderTest.DeleteAuction(auctionId);
+
+        // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task DeleteAuction_UserNotSeller_ReturnsForbid()
+    {
+        // arrange:
+        var auctionId = RandomValue.Guid();
+        var auction = this.fixture.Build<Auction>().Without(x => x.Item).Create();
+        auction.Item = this.fixture.Build<Item>().Without(x => x.Auction).Create();
+        // auction.Seller = this.userName;
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
+
+        // act:
+        var result = await this.controllerUnderTest.DeleteAuction(auctionId);
+
+        // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ForbidResult>();
+    }
+
+    [Fact]
+    public async Task DeleteAuction_SaveFails_ReturnsBadRequest()
+    {
+        // arrange:
+        var auctionId = RandomValue.Guid();
+        var auction = this.fixture.Build<Auction>().Without(x => x.Item).Create();
+        auction.Item = this.fixture.Build<Item>().Without(x => x.Auction).Create();
+        auction.Seller = this.userName;
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
+        this.auctionRepository.Setup(x => x.RemoveAuction(auction));
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(false);
+
+        // act:
+        var result = await this.controllerUnderTest.DeleteAuction(auctionId);
+
+        // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<BadRequestObjectResult>();
+        this.auctionRepository.Verify(x => x.RemoveAuction(auction), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAuction_SaveSucceeds_ReturnsOk()
+    {
+        // arrange:
+        var auctionId = RandomValue.Guid();
+        var auction = this.fixture.Build<Auction>().Without(x => x.Item).Create();
+        auction.Item = this.fixture.Build<Item>().Without(x => x.Auction).Create();
+        auction.Seller = this.userName;
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
+        this.auctionRepository.Setup(x => x.RemoveAuction(auction));
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
+
+        // act:
+        var result = await this.controllerUnderTest.DeleteAuction(auctionId);
+
+        // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<OkResult>();
+        this.auctionRepository.Verify(x => x.RemoveAuction(auction), Times.Once);
     }
 }

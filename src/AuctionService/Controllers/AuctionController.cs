@@ -116,7 +116,6 @@ public class AuctionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
-
         var auctionToRemove = await this.auctionRepository.GetAuctionEntityById(id);
 
         if (auctionToRemove is null)
@@ -128,11 +127,6 @@ public class AuctionController : ControllerBase
         if (auctionToRemove.Seller != this.User?.Identity?.Name)
         {
             return this.Forbid();
-        }
-
-        if (auctionToRemove is null)
-        {
-            return this.NotFound();
         }
 
         this.auctionRepository.RemoveAuction(auctionToRemove);
