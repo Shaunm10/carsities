@@ -138,13 +138,22 @@ public class AuctionControllerTests
     }
 
 
+    [Fact]
     public async Task UpdateAuction_AuctionNotFound_ReturnsNotFound()
     {
         // arrange:
+        var auctionId = RandomValue.Guid();
+        var updatedAuction = this.fixture.Create<UpdateAuctionDto>();
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(value: null);
 
         // act:
+        var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
 
         // assert:
+        result.Should().NotBeNull();
+        var notFoundResult = result as NotFoundResult;
+        notFoundResult.Should().NotBeNull();
+        notFoundResult.StatusCode.Should().Be(404);
     }
 
     public async Task UpdateAuction_UserIsNotSeller_ReturnsForbidden()
