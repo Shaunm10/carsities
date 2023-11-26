@@ -21,12 +21,15 @@ public class AuctionControllerTests
     private readonly Fixture fixture;
     private readonly IMapper mapper;
     private readonly AuctionController controllerUnderTest;
+    private readonly string userName;
 
     public AuctionControllerTests()
     {
+
         this.fixture = new Fixture();
         this.auctionRepository = new Mock<IAuctionRepository>();
         this.publishEndpoint = new Mock<IPublishEndpoint>();
+        userName = RandomValue.String(12);
 
         var mockMapper = new MapperConfiguration(mc =>
         {
@@ -40,7 +43,7 @@ public class AuctionControllerTests
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = Helpers.GetClaimsPrincipal()
+                    User = Helpers.GetClaimsPrincipal(userName)
                 }
             }
         };
@@ -156,30 +159,59 @@ public class AuctionControllerTests
         notFoundResult.StatusCode.Should().Be(404);
     }
 
+    [Fact]
     public async Task UpdateAuction_UserIsNotSeller_ReturnsForbidden()
     {
         // arrange:
+        var auctionId = RandomValue.Guid();
+        var updatedAuction = this.fixture.Create<UpdateAuctionDto>();
+        var auction = new Auction();
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
 
         // act:
+        var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
 
         // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ForbidResult>();
     }
 
+    [Fact]
     public async Task UpdateAuction_SaveSuccessful_ReturnsOk()
     {
         // arrange:
+        var auctionId = RandomValue.Guid();
+        var updatedAuction = this.fixture.Create<UpdateAuctionDto>();
+        var auction = new Auction
+        {
+            Seller = this.userName,
+            Item = new Item()
+        };
+
+        this.auctionRepository.Setup(x => x.GetAuctionEntityById(auctionId)).ReturnsAsync(auction);
+        this.auctionRepository.Setup(x => x.SaveChangesAsync()).ReturnsAsync(true);
 
         // act:
+        var result = await this.controllerUnderTest.UpdateAuction(auctionId, updatedAuction);
 
         // assert:
+        result.Should().NotBeNull();
+        result.Should().BeOfType<OkResult>();
+        auction.Item.Make.Should().Be(updatedAuction.Make);
+        auction.Item.Model.Should().Be(updatedAuction.Model);
+        auction.Item.Color.Should().Be(updatedAuction.Color);
+        auction.Item.Mileage.Should().Be(updatedAuction.Mileage);
+        auction.Item.Year.Should().Be(updatedAuction.Year);
+
     }
 
-    public async Task UpdateAuction_SaveUnsuccessful_ReturnsBadRequest()
-    {
-        // arrange:
+    // [Fact]
+    // public Task UpdateAuction_SaveUnsuccessful_ReturnsBadRequest()
+    // {
+    //     // arrange:
 
-        // act:
+    //     // act:
 
-        // assert:
-    }
+    //     // assert:
+    // }
 }
