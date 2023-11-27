@@ -1,9 +1,7 @@
 using AuctionService.Data;
 using AuctionService.IntegrationTests.Extensions;
-using AuctionService.IntegrationTests.Util;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +34,6 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
 
             // this will remove the current services and replace it with a test one.
             services.AddMassTransitTestHarness();
-
 
             services.EnsureCreated<AuctionDbContext>();
 
