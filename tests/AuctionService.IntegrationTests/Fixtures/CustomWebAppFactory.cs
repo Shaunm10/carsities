@@ -1,4 +1,5 @@
 using AuctionService.Data;
+using AuctionService.IntegrationTests.Extensions;
 using AuctionService.IntegrationTests.Util;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,8 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
     {
         builder.ConfigureTestServices(services =>
         {
+            services.RemoveDbContext<AuctionDbContext>();
+
             services.AddDbContext<AuctionDbContext>(options =>
             {
                 options.UseNpgsql(this.postgreSqlContainer.GetConnectionString());
@@ -35,6 +38,7 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
             services.AddMassTransitTestHarness();
 
 
+            services.EnsureCreated<AuctionDbContext>();
 
         });
         //base.ConfigureWebHost(builder);
