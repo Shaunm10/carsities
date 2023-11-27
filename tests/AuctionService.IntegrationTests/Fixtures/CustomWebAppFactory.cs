@@ -18,7 +18,7 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
     public async Task InitializeAsync()
     {
         // spin up the container
-        await this.postgreSqlContainer.StopAsync();
+        await this.postgreSqlContainer.StartAsync();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
