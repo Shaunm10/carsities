@@ -59,9 +59,24 @@ public static class DbHelper
                     Year = 2018,
                     ImageUrl = "https://cdn.pixabay.com/photo/2012/05/29/00/43/car-49278_960_720.jpg"
                 }
+            },
+             // 3 Ford mustang
+            new Auction
+            {
+                Id = Guid.Parse("bbab4d5a-8565-48b1-9450-5ac2a5c4a654"),
+                Status = Status.Live,
+                Seller = "bob",
+                AuctionEnd = DateTime.UtcNow.AddDays(4),
+                Item = new Item
+                {
+                    Make = "Ford",
+                    Model = "Mustang",
+                    Color = "Black",
+                    Mileage = 65125,
+                    Year = 2023,
+                    ImageUrl = "https://cdn.pixabay.com/photo/2012/11/02/13/02/car-63930_960_720.jpg"
+                }
             }
-
          };
     }
-
 }
