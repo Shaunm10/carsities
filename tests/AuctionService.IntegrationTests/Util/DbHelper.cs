@@ -1,7 +1,5 @@
 using AuctionService.Data;
 using AuctionService.Entities;
-using Microsoft.EntityFrameworkCore;
-using Npgsql.Replication;
 
 namespace AuctionService.IntegrationTests.Util;
 
@@ -13,7 +11,7 @@ public static class DbHelper
         db.SaveChanges();
     }
 
-    public static void ReinitDbForTests(AuctionDbContext db)
+    public static void ReInitializeDbForTests(AuctionDbContext db)
     {
         db.Auctions.RemoveRange(db.Auctions);
         db.SaveChanges();

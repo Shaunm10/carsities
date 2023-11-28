@@ -65,9 +65,24 @@ public class AuctionControllerTests(CustomWebAppFactory webAppFactory) :
         // act:
         var response = await this.httpClient.GetAsync($"api/auctions/{auctionId}");
 
-
         // assert:
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+
+    [Fact]
+    public async Task CreateAuction_WithNoAuth_ShouldReturn401()
+    {
+        // arrange:
+        var auction = new CreateAuctionDto
+        {
+            Make = "test"
+        };
+        // act:
+        var response = await this.httpClient.PostAsJsonAsync($"api/auctions", auction);
+
+        // assert:
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
     }
 
 
@@ -78,7 +93,7 @@ public class AuctionControllerTests(CustomWebAppFactory webAppFactory) :
     {
         using var scope = webAppFactory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
-        DbHelper.ReinitDbForTests(db);
+        DbHelper.ReInitializeDbForTests(db);
         return Task.CompletedTask;
     }
 
