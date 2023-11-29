@@ -137,7 +137,7 @@ public class AuctionControllerTests(CustomWebAppFactory webAppFactory) :
     #region [ UpdateAuction ]
 
     [Fact]
-    public async Task UpdateAuction_WithIValidAuctinId_ShouldReturn404()
+    public async Task UpdateAuction_WithIValidAuctionId_ShouldReturn404()
     {
         // arrange:
         var sellerName = "bob";
@@ -183,7 +183,6 @@ public class AuctionControllerTests(CustomWebAppFactory webAppFactory) :
 
         // assert:
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
     }
 
     #endregion

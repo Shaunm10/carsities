@@ -8,12 +8,12 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.0" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.14"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-    <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0"/>
-    <PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="7.0.0"/>
-    <PackageReference Include="xunit" Version="2.4.2"/>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.14" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0" />
+    <PackageReference Include="WebMotions.Fake.Authentication.JwtBearer" Version="7.0.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -22,9 +22,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="RandomTestValues" Version="2.1.1"/>
+    <PackageReference Include="RandomTestValues" Version="2.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AuctionService\AuctionService.csproj"/>
+    <ProjectReference Include="..\..\src\AuctionService\AuctionService.csproj" />
   </ItemGroup>
 </Project>
