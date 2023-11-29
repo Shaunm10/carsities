@@ -46,7 +46,7 @@ public class CustomWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetim
                 });
 
         });
-        //base.ConfigureWebHost(builder);
+        base.ConfigureWebHost(builder);
     }
 
     async Task IAsyncLifetime.DisposeAsync()

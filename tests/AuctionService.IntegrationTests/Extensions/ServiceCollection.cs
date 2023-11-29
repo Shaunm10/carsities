@@ -24,16 +24,19 @@ public static class ServiceCollection
 
     public static void EnsureCreated<T>(this IServiceCollection services)
     {
-         var sp = services.BuildServiceProvider();
+        var sp = services.BuildServiceProvider();
 
-            // get the Db context
-            using var scope = sp.CreateScope();
-            var scopedServices = scope.ServiceProvider;
-            var db = scopedServices.GetRequiredService<AuctionDbContext>();
+        // get the Db context
+        using var scope = sp.CreateScope();
+        var scopedServices = scope.ServiceProvider;
+        var db = scopedServices.GetRequiredService<AuctionDbContext>();
 
-            // so we can migration the db used.
-            db.Database.Migrate();
-            DbHelper.InitDbForTests(db);
+        // needed for specifying the time in Postgres
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+        // so we can migration the db used.
+        db.Database.Migrate();
+        DbHelper.InitDbForTests(db);
 
     }
 

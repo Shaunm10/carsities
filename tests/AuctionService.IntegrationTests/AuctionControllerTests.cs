@@ -15,6 +15,7 @@ public class AuctionControllerTests :
     IClassFixture<CustomWebAppFactory>, IAsyncLifetime
 {
     private readonly CustomWebAppFactory webAppFactory;
+    private const string apiRoute = "api/auctions";
 
     public AuctionControllerTests(CustomWebAppFactory webAppFactory)
     {
@@ -32,7 +33,7 @@ public class AuctionControllerTests :
         // arrange:
 
         // act:
-        var response = await this.httpClient.GetFromJsonAsync<List<AuctionDto>>("api/auctions");
+        var response = await this.httpClient.GetFromJsonAsync<List<AuctionDto>>(apiRoute);
 
 
         // assert:
@@ -49,7 +50,7 @@ public class AuctionControllerTests :
         var auctionId = FordGTAuctionId;
 
         // act:
-        var response = await this.httpClient.GetFromJsonAsync<AuctionDto>($"api/auctions/{auctionId}");
+        var response = await this.httpClient.GetFromJsonAsync<AuctionDto>($"{apiRoute}/{auctionId}");
 
 
         // assert:
@@ -63,7 +64,7 @@ public class AuctionControllerTests :
         var auctionId = Guid.NewGuid().ToString();
 
         // act:
-        var response = await this.httpClient.GetAsync($"api/auctions/{auctionId}");
+        var response = await this.httpClient.GetAsync($"{apiRoute}/{auctionId}");
 
 
         // assert:
@@ -77,7 +78,7 @@ public class AuctionControllerTests :
         var auctionId = "notAGuid";
 
         // act:
-        var response = await this.httpClient.GetAsync($"api/auctions/{auctionId}");
+        var response = await this.httpClient.GetAsync($"{apiRoute}/{auctionId}");
 
         // assert:
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -96,7 +97,7 @@ public class AuctionControllerTests :
             Make = "test"
         };
         // act:
-        var response = await this.httpClient.PostAsJsonAsync($"api/auctions", auction);
+        var response = await this.httpClient.PostAsJsonAsync(apiRoute, auction);
 
         // assert:
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
@@ -111,14 +112,13 @@ public class AuctionControllerTests :
         this.httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(sellerName));
 
         // act:
-        var response = await this.httpClient.PostAsJsonAsync($"api/auctions", auction);
+        var response = await this.httpClient.PostAsJsonAsync(apiRoute, auction);
 
         // assert:
         response.EnsureSuccessStatusCode();
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var createdAuction = await response.Content.ReadFromJsonAsync<AuctionDto>();
         createdAuction.Seller.Should().Be(sellerName);
-
     }
 
     #endregion
@@ -145,7 +145,8 @@ public class AuctionControllerTests :
             Color = "test",
             Mileage = 10,
             Year = 10,
-            ReservePrice = 20.99m
+            ReservePrice = 20.99m,
+            AuctionEnd = DateTime.Now.AddDays(5)
         };
     }
 }
