@@ -4,6 +4,7 @@ using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.IntegrationTests.Fixtures;
 using AuctionService.IntegrationTests.Util;
+using AutoFixture;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -15,16 +16,17 @@ public class AuctionControllerTests :
     IClassFixture<CustomWebAppFactory>, IAsyncLifetime
 {
     private readonly CustomWebAppFactory webAppFactory;
+    private readonly Fixture fixture;
     private const string apiRoute = "api/auctions";
+    private const string FordGTAuctionId = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
+    private readonly HttpClient httpClient;
 
     public AuctionControllerTests(CustomWebAppFactory webAppFactory)
     {
         this.webAppFactory = webAppFactory;
         this.httpClient = webAppFactory.CreateClient();
-
+        this.fixture = new Fixture();
     }
-    private readonly HttpClient httpClient;
-    private const string FordGTAuctionId = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
 
     #region [ Get ]
     [Fact]
@@ -119,6 +121,76 @@ public class AuctionControllerTests :
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var createdAuction = await response.Content.ReadFromJsonAsync<AuctionDto>();
         createdAuction.Seller.Should().Be(sellerName);
+    }
+
+    [Fact]
+    public async Task CreateAuction_WithInvalidCreateAuctionDto_ShouldReturn400()
+    {
+        // arrange:
+        var sellerName = RandomValue.String(12);
+        var auction = GetAuctionForCreate();
+        auction.Make = null;
+        this.httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(sellerName));
+
+        // act:
+        var response = await this.httpClient.PostAsJsonAsync(apiRoute, auction);
+
+        // assert:
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    #endregion
+
+    #region [ UpdateAuction ]
+
+    [Fact]
+    public async Task UpdateAuction_WithIValidAuctinId_ShouldReturn404()
+    {
+        // arrange:
+        var sellerName = "bob";
+        var id = Guid.NewGuid();
+        var auction = this.fixture.Create<UpdateAuctionDto>();
+        this.httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(sellerName));
+
+        // act:
+        var response = await this.httpClient.PutAsJsonAsync($"{apiRoute}/{id}", auction);
+
+        // assert:
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndUser_ShouldReturn200()
+    {
+        // arrange:
+        var sellerName = "bob";
+        var id = FordGTAuctionId;
+        var auction = this.fixture.Create<UpdateAuctionDto>();
+        this.httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(sellerName));
+
+        // act:
+        var response = await this.httpClient.PutAsJsonAsync($"{apiRoute}/{id}", auction);
+
+        // assert:
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task UpdateAuction_WithValidUpdateDtoAndInvalidUser_ShouldReturn403()
+    {
+        // arrange:
+        var sellerName = RandomValue.String(12);
+        var id = FordGTAuctionId;
+        var auction = this.fixture.Create<UpdateAuctionDto>();
+        this.httpClient.SetFakeJwtBearerToken(AuthHelper.GetBearerForUser(sellerName));
+
+        // act:
+        var response = await this.httpClient.PutAsJsonAsync($"{apiRoute}/{id}", auction);
+
+        // assert:
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
     }
 
     #endregion
