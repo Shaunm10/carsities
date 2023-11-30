@@ -50,3 +50,16 @@ Adding templates to .net core
 > dotnet new --install Duende.IdentityServer.Templates
 
 ## Gateway Info
+
+## Testing
+
+### Testing Doubles
+- Fake -  Something that has a working implementation, but is not the `real` implementation.
+- Mock - Something that returns a certain value when called with particular arguments.
+- Stub - Some object that just returns a predefined value.
+
+### Unit Testing naming convention
+
+`{MethodName}_{Scenario}_{ExpectedResult}`
+
+Example: `HasReservePrice_ReservePriceGreaterThanZero_True()`

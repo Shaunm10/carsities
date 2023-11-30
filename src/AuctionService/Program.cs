@@ -1,8 +1,11 @@
+using System.Runtime.CompilerServices;
 using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,7 @@ builder.Services.AddDbContext<AuctionDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
+builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMassTransit(x =>
@@ -84,3 +88,6 @@ catch (Exception ex)
 }
 
 app.Run();
+
+// to allow for Integration
+public partial class Program { }
