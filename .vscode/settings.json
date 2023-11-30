@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
+        "Carsties",
         "Npgsql"
-    ]
+    ],
+    "css.lint.unknownAtRules": "ignore"
 }
