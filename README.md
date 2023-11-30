@@ -40,6 +40,7 @@ Build a docker image via the docker compose
 | Search Service   | http://localhost:7002 |
 | Identity Service | http://localhost:5000 |
 | Gateway Service  | http://localhost:6001 |
+| Next.js App      | http://localhost:3000 |
 
 ## Management Urls
 
@@ -72,3 +73,9 @@ Example: `HasReservePrice_ReservePriceGreaterThanZero_True()`
 [Next.js](https://nextjs.org/)
 
 [Installation and setup](https://nextjs.org/docs/getting-started/installation)
+
+Run the App
+
+> ~/frontend/web-app/npm run dev
+
+[View app locally](http://localhost:3000)
