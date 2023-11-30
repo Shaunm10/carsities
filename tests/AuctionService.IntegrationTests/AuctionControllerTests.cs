@@ -12,14 +12,20 @@ using RandomTestValues;
 
 namespace AuctionService.IntegrationTests;
 
-public class AuctionControllerTests(CustomWebAppFactory webAppFactory) :
-    IClassFixture<CustomWebAppFactory>, IAsyncLifetime
+[Collection("Shared collection")]
+public class AuctionControllerTests : IAsyncLifetime
 {
-    private readonly CustomWebAppFactory webAppFactory = webAppFactory;
+    private readonly CustomWebAppFactory webAppFactory;
     private readonly Fixture fixture = new Fixture();
     private const string apiRoute = "api/auctions";
     private const string FordGTAuctionId = "afbee524-5972-4075-8800-7d1f9d7b0a0c";
-    private readonly HttpClient httpClient = webAppFactory.CreateClient();
+    private readonly HttpClient httpClient;
+
+    public AuctionControllerTests(CustomWebAppFactory webAppFactory)
+    {
+        this.webAppFactory = webAppFactory;
+        this.httpClient = webAppFactory.CreateClient();
+    }
 
     #region [ Get ]
     [Fact]
