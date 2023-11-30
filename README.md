@@ -79,3 +79,5 @@ Run the App
 > ~/frontend/web-app/npm run dev
 
 [View app locally](http://localhost:3000)
+
+- Note: this requires Node version 18.17 (or higher)
