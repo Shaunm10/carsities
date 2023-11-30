@@ -21,12 +21,15 @@ Run docker compose file in detached mode
 > docker compose up -d
 
 Runs the dockerfile to build an image
+
 > docker build -f src/AuctionService/Dockerfile -t testing_123 .
 
 Run the Docker image
+
 > docker run testing_123
 
 Build a docker image via the docker compose
+
 > docker compose build auction-svc
 
 ## Service Urls
@@ -36,8 +39,7 @@ Build a docker image via the docker compose
 | Auction Service  | http://localhost:7001 |
 | Search Service   | http://localhost:7002 |
 | Identity Service | http://localhost:5000 |
-| Gateway Service | http://localhost:6001 |
-
+| Gateway Service  | http://localhost:6001 |
 
 ## Management Urls
 
@@ -54,7 +56,8 @@ Adding templates to .net core
 ## Testing
 
 ### Testing Doubles
-- Fake -  Something that has a working implementation, but is not the `real` implementation.
+
+- Fake - Something that has a working implementation, but is not the `real` implementation.
 - Mock - Something that returns a certain value when called with particular arguments.
 - Stub - Some object that just returns a predefined value.
 
@@ -63,3 +66,9 @@ Adding templates to .net core
 `{MethodName}_{Scenario}_{ExpectedResult}`
 
 Example: `HasReservePrice_ReservePriceGreaterThanZero_True()`
+
+### Next.js setup
+
+[Next.js](https://nextjs.org/)
+
+[Installation and setup](https://nextjs.org/docs/getting-started/installation)
