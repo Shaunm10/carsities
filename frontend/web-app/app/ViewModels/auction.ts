@@ -1,4 +1,5 @@
 interface Auction {
-    id: string,
-    make: string
+    Id: string,
+    make: string,
+    imageUrl: string
 }
