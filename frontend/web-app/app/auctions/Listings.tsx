@@ -8,13 +8,15 @@ async function GetData() {
 		throw new Error('Unable to get data');
 	}
 
-	return res.json();
+	const json = res.json();
+
+	return json;
 }
 
 export const Listings = async () => {
 	const data = await GetData();
 	return (
-		<div>
+		<div className="grid grid-cols-4 gap-6">
 			{data &&
 				data.results.map((auction: any) => (
 					<AuctionCard auction={auction} key={auction.Id} />
