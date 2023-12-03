@@ -1,5 +1,11 @@
-export default function Home() {
-  console.log('Server component');
+import Listings from './auctions/Listings';
 
-  return <div>Content goes here!</div>;
+export default function Home() {
+	console.log('Server component');
+
+	return (
+		<div>
+			<Listings />
+		</div>
+	);
 }
