@@ -81,3 +81,5 @@ Run the App
 [View app locally](http://localhost:3000)
 
 - Note: this requires Node version 18.17 (or higher)
+
+[React Icons](https://react-icons.github.io/react-icons/)
