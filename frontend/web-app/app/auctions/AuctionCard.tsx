@@ -1,9 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
 import CountdownTimer from './CountdownTimer';
 import { CarImage } from './CarImage';
+import { Auction } from '@/types';
 
-type Props = { auction: any };
+type Props = { auction: Auction };
 export const AuctionCard = ({ auction }: Props) => {
   return (
     <a href="#" className="group">

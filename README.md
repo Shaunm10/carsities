@@ -83,3 +83,5 @@ Run the App
 - Note: this requires Node version 18.17 (or higher)
 
 [React Icons](https://react-icons.github.io/react-icons/)
+
+[Flowbite components](https://www.flowbite-react.com/)
