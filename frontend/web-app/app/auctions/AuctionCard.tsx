@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import CountdownTimer from './CountdownTimer';
 
 type Props = { auction: any };
 export const AuctionCard = ({ auction }: Props) => {
@@ -22,6 +23,7 @@ export const AuctionCard = ({ auction }: Props) => {
 					{auction.make} {auction.model}
 				</h3>
 				<p className="font-semibold text-sm">{auction.year}</p>
+				<CountdownTimer />
 			</div>
 		</a>
 	);
