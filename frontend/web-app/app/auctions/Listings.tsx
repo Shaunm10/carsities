@@ -1,7 +1,6 @@
 import React from 'react';
 import { AuctionCard } from './AuctionCard';
 import { Auction, PagedResults } from '@/types';
-import { AppPageRouteModule } from 'next/dist/server/future/route-modules/app-page/module.compiled';
 import { AppPagination } from '../components/AppPagination';
 
 async function GetData(): Promise<PagedResults<Auction>> {
