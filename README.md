@@ -85,3 +85,5 @@ Run the App
 [React Icons](https://react-icons.github.io/react-icons/)
 
 [Flowbite components](https://www.flowbite-react.com/)
+
+[Zustand docs](https://docs.pmnd.rs/zustand/getting-started/introduction)
