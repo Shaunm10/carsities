@@ -6,37 +6,57 @@ import { AppPagination } from '../components/AppPagination';
 import { getData } from '../actions/auctionActions';
 import { Filters } from './Filters';
 
+import { shallow } from 'zustand/shallow';
+import qs from 'query-string';
+import { useParamsStore } from '@/hooks/useParamsStore';
+
 export const Listings = () => {
-  const [auctions, setAuctions] = useState<Auction[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(4);
+  const [data, setData] = useState<PagedResults<Auction>>();
+
+  const params = useParamsStore(
+    (state) => ({
+      pageNumber: state.pageNumber,
+      pageCount: state.pageCount,
+      searchTerm: state.searchTerm,
+      pageSize: state.pageSize,
+    }),
+    shallow
+  );
+
+  const setParams = useParamsStore((state) => state.setParams);
+  const url = qs.stringifyUrl({
+    url: '',
+    query: params,
+  });
+
+  const setPageNumber = (pageNumber: number) => {
+    setParams({ pageNumber });
+  };
 
   useEffect(() => {
-    getData(pageNumber, pageSize).then((data) => {
-      setPageCount(data.pageCount);
-      setAuctions(data.results);
+    getData(url).then((data) => {
+      setData(data);
     });
-  }, [pageNumber, pageSize]);
+  }, [url]);
 
-  if (auctions.length === 0) {
+  if (!data) {
     return <h3>Loading...</h3>;
   }
 
   return (
     <>
-      <Filters pageSize={pageSize} setPageSize={setPageSize} />
+      <Filters />
       <div className="grid grid-cols-4 gap-6">
-        {auctions &&
-          auctions.map((auction) => (
+        {data.results &&
+          data.results.map((auction) => (
             <AuctionCard auction={auction} key={auction.id} />
           ))}
       </div>
       <div className="flex justify-center mt-4">
         <AppPagination
           pageChanged={setPageNumber}
-          currentPage={1}
-          pageCount={pageCount}
+          currentPage={params.pageNumber}
+          pageCount={data.pageCount}
         />
       </div>
       <div></div>
