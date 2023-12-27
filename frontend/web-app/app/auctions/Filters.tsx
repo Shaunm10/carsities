@@ -1,60 +1,14 @@
 import { useParamsStore } from '@/hooks/useParamsStore';
-import { filterByValues } from '@/types/filterBy';
 import { orderByValues } from '@/types/orderBy';
 import { Button, ButtonGroup } from 'flowbite-react';
 
 import React from 'react';
-import { IconType } from 'react-icons';
-import { AiOutlineClockCircle, AiOutlineSortAscending } from 'react-icons/ai';
-import { BsFillStopCircleFill, BsStopwatchFill } from 'react-icons/bs';
-import { GiFinishLine, GiFlame } from 'react-icons/gi';
+
+import { orderButtons } from './orderButtons';
+import { filterButtons } from './filterButtons';
 
 // the number of items per page.
 const pageSizeButtons = [4, 8, 12];
-
-const orderButtons: {
-  label: string;
-  icon: IconType;
-  value: orderByValues;
-}[] = [
-  {
-    label: 'Alphabetical',
-    icon: AiOutlineSortAscending,
-    value: 'make',
-  },
-  {
-    label: 'End date',
-    icon: AiOutlineClockCircle,
-    value: 'endingSoon',
-  },
-  {
-    label: 'Recently added',
-    icon: BsFillStopCircleFill,
-    value: 'new',
-  },
-];
-
-const filterButtons: {
-  label: string;
-  icon: IconType;
-  value: filterByValues;
-}[] = [
-  {
-    label: 'Live Auctions',
-    icon: GiFlame,
-    value: 'live',
-  },
-  {
-    label: 'Ending < 6 hours',
-    icon: GiFinishLine,
-    value: 'endingSoon',
-  },
-  {
-    label: 'Completed',
-    icon: BsStopwatchFill,
-    value: 'finished',
-  },
-];
 
 export const Filters = () => {
   const pageSize = useParamsStore((state) => state.pageSize);
