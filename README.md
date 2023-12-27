@@ -87,3 +87,6 @@ Run the App
 [Flowbite components](https://www.flowbite-react.com/)
 
 [Zustand docs](https://docs.pmnd.rs/zustand/getting-started/introduction)
+
+#### Client Auth
+Using OpenId Connect
