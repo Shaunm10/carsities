@@ -7,6 +7,7 @@ type State = {
   pageNumber: number;
   pageSize: number;
   pageCount: number;
+  orderBy: string;
   searchTerm: string;
   searchValue: string;
 };
@@ -28,6 +29,7 @@ const initialState: State = {
   pageNumber: 1,
   pageSize: 12,
   pageCount: 1,
+  orderBy: 'make',
   searchTerm: '',
   searchValue: ''
 };
