@@ -34,7 +34,9 @@ export const Listings = () => {
   };
 
   useEffect(() => {
+    // call the network service to search for auctions
     getData(url).then((data) => {
+      // and set the data.
       setData(data);
     });
   }, [url]);
@@ -46,13 +48,13 @@ export const Listings = () => {
   return (
     <>
       <Filters />
-      <div className="grid grid-cols-4 gap-6">
+      <div className='grid grid-cols-4 gap-6'>
         {data.results &&
           data.results.map((auction) => (
             <AuctionCard auction={auction} key={auction.id} />
           ))}
       </div>
-      <div className="flex justify-center mt-4">
+      <div className='flex justify-center mt-4'>
         <AppPagination
           pageChanged={setPageNumber}
           currentPage={params.pageNumber}
