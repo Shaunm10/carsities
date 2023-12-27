@@ -20,6 +20,7 @@ export const Listings = () => {
       searchTerm: state.searchTerm,
       pageSize: state.pageSize,
       orderBy: state.orderBy,
+      filterBy: state.filterBy,
     }),
     shallow
   );

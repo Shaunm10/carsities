@@ -1,3 +1,4 @@
+import { orderByValues } from '@/types/orderBy';
 import { create } from 'zustand';
 
 /**
@@ -7,9 +8,10 @@ type State = {
   pageNumber: number;
   pageSize: number;
   pageCount: number;
-  orderBy: string;
+  orderBy: orderByValues;
   searchTerm: string;
   searchValue: string;
+  filterBy: string;
 };
 
 /**
@@ -31,11 +33,12 @@ const initialState: State = {
   pageCount: 1,
   orderBy: 'make',
   searchTerm: '',
-  searchValue: ''
+  searchValue: '',
+  filterBy: 'live'
 };
 
 /**
- * The export that contains the `Reducer` functionality
+ * The export that contains the `Reducer` and selector functionality
  */
 export const useParamsStore = create<State & Actions>()((set) => ({
   ...initialState,
