@@ -89,4 +89,5 @@ Run the App
 [Zustand docs](https://docs.pmnd.rs/zustand/getting-started/introduction)
 
 #### Client Auth
-Using OpenId Connect
+
+Using [next-Auth.js](https://next-auth.js.org/providers/duende-identityserver6) for our auth library
