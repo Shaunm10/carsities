@@ -19,6 +19,12 @@ export const authOptions: NextAuthOptions = {
       idToken: true, // this will ask the IDP for the userId
     }),
   ],
+  callbacks: {
+    // This callback is called whenever a JSON Web Token is created
+    async jwt({ token, profile, account, user }) {
+      console.log({ token, profile, account, user });
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
