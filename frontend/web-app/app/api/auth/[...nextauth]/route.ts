@@ -16,6 +16,7 @@ export const authOptions: NextAuthOptions = {
           scope: 'openid profile auctionApp',
         },
       },
+      idToken: true, // this will ask the IDP for the userId
     }),
   ],
 };
