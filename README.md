@@ -91,3 +91,13 @@ Run the App
 #### Client Auth
 
 Using [next-Auth.js](https://next-auth.js.org/providers/duende-identityserver6) for our auth library
+
+##### .env.local
+
+You will need to add the file .env.local in the **web-app** directory
+
+```
+NEXTAUTH_SECRET=ValueYourChoose
+NEXTAUTH_URL=http://localhost:3000
+
+```

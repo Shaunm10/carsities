@@ -20,9 +20,21 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    // This callback is called whenever a JSON Web Token is created
+    // This callback is fired called whenever a JSON Web Token is created
     async jwt({ token, profile, account, user }) {
+      if (profile) {
+        token.username = profile.username;
+      }
       console.log({ token, profile, account, user });
+      return token;
+    },
+    // this callback is fired when a session is checked.
+    async session({ session, token }) {
+      if (token) {
+        session.user.username = token.username;
+      }
+
+      return session;
     },
   },
 };
