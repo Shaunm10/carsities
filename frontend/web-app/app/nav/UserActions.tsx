@@ -8,8 +8,9 @@ import { AiFillCar, AiFillTrophy, AiOutlineLogout } from 'react-icons/ai';
 import { signOut } from 'next-auth/react';
 
 type Props = {
-  user: User;
+  user: Partial<User>;
 };
+
 export const UserActions = ({ user }: Props) => {
   return (
     <Dropdown label={`Welcome ${user.name}`} inline>
