@@ -12,3 +12,28 @@ export async function getData(query: string): Promise<PagedResults<Auction>> {
 
   return json;
 }
+
+export async function updateAuctionTest() {
+
+  const data = {
+    // a random number from 1 -> 100,000
+    milage: Math.floor(Math.random() * 100000) + 1
+  }
+
+  const response = await fetch('http://localhost:6001/auctions/afbee524-5972-4075-8800-7d1f9d7b0a0c', {
+    method: 'PUT',
+    headers: {},
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+
+    return {
+      status: response.status,
+      message: response.statusText
+    }
+  }
+
+  return response.statusText;
+
+}
