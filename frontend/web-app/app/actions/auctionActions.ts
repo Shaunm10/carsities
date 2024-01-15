@@ -22,7 +22,7 @@ export async function updateAuctionTest() {
 
   const response = await fetch('http://localhost:6001/auctions/afbee524-5972-4075-8800-7d1f9d7b0a0c', {
     method: 'PUT',
-    headers: {},
+    headers: {}, // no way this will work until the header is added.
     body: JSON.stringify(data)
   });
 

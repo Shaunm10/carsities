@@ -9,8 +9,8 @@ type Props = {
   title?: string;
   subtitle?: string;
   showReset?: boolean;
-  showLogin?: boolean;
-  callbackUrl?: string;
+  showLogin?: boolean; // if the user is NOT logged in
+  callbackUrl?: string; // the url to go back to once the user has logged in.
 };
 export const EmptyFilter = ({
   title = 'No matches for this filter',
