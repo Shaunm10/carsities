@@ -25,6 +25,12 @@ export const authOptions: NextAuthOptions = {
       if (profile) {
         token.username = profile.username;
       }
+
+      // if we have an account + a token
+      if (account?.access_token) {
+        token.access_token = account.access_token;
+      }
+
       console.log({ token, profile, account, user });
       return token;
     },

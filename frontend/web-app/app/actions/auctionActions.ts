@@ -1,5 +1,6 @@
 'use server';
 import { Auction, PagedResults } from '@/types';
+import { getTokenWorkAround } from './authActions';
 
 export async function getData(query: string): Promise<PagedResults<Auction>> {
   const res = await fetch(`http://localhost:6001/search${query}`);
@@ -20,9 +21,14 @@ export async function updateAuctionTest() {
     milage: Math.floor(Math.random() * 100000) + 1
   }
 
+  const token = await getTokenWorkAround();
+
   const response = await fetch('http://localhost:6001/auctions/afbee524-5972-4075-8800-7d1f9d7b0a0c', {
     method: 'PUT',
-    headers: {}, // no way this will work until the header is added.
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token?.access_token}`
+    }, // no way this will work until the header is added.
     body: JSON.stringify(data)
   });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getSession } from '../actions/authActions';
+import { getSession, getTokenWorkAround } from '../actions/authActions';
 import Head from 'next/head';
 import { Heading } from '../components/Heading';
 import { AuthTest } from './AuthTest';
@@ -10,6 +10,7 @@ import { AuthTest } from './AuthTest';
  */
 const Session = async () => {
   const session = await getSession();
+  const token = await getTokenWorkAround();
   return (
     <div>
       <Heading title='Session dashboard' subtitle=''></Heading>
@@ -19,6 +20,10 @@ const Session = async () => {
       </div>
       <div className='mt-4'>
         <AuthTest />
+      </div>
+      <div className='bg-green-200 border-2 border-blue-500 mt-4'>
+        <h3 className='text-lg'>Token data</h3>
+        <pre className='overflow-auto'>{JSON.stringify(token, null, 2)}</pre>
       </div>
     </div>
   );
