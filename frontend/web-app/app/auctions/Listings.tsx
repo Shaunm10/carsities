@@ -9,7 +9,6 @@ import { Filters } from './Filters';
 import { shallow } from 'zustand/shallow';
 import qs from 'query-string';
 import { useParamsStore } from '@/hooks/useParamsStore';
-import { Heading } from '../components/Heading';
 import { EmptyFilter } from '../components/EmptyFilter';
 
 export const Listings = () => {

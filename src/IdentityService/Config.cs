@@ -40,7 +40,8 @@ public static class Config
                 RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
                 AllowedScopes = {Scopes.OpenId, Scopes.Profile, Scopes.AuctionApp},
                 AllowOfflineAccess = true, // to allow token access functionality.
-                AccessTokenLifetime = 3600*24*30 //  month, TODO: Change, this is temporary.
+                AccessTokenLifetime = 3600*24*30, //  month, TODO: Change, this is temporary.
+                AlwaysIncludeUserClaimsInIdToken = true
             }
             // m2m client credentials flow client
             // new Client
