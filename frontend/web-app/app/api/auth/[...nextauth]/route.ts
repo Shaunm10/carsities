@@ -1,6 +1,9 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import DuendeIdentityServer6 from 'next-auth/providers/duende-identity-server6';
 
+/**
+ * This is configuration and Events for Next.js Authentication.
+ */
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',

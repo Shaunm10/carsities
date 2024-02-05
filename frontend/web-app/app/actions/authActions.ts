@@ -43,8 +43,10 @@ export async function getTokenWorkAround() {
 
     // import the cookies() and create an object
     cookies: Object.fromEntries(
-      cookies().getAll().map(c => [c.name, c.value])
-    )
+      cookies()
+        .getAll()
+        .map((c) => [c.name, c.value])
+    ),
   } as NextApiRequest;
 
   return await getToken({ req });
