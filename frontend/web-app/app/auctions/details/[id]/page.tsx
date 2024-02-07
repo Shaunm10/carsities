@@ -1,5 +1,9 @@
 import React from 'react';
 
-export const Details = () => {
-  return <div>Details</div>;
+type props = { params: { id: string } };
+
+const Details = ({ params }: props) => {
+  return <div>Details for {params.id}</div>;
 };
+
+export default Details;
