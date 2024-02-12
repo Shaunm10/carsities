@@ -31,22 +31,52 @@ export const AuctionForm = () => {
         control={control}
         rules={{ required: 'Model is required' }}
       />
-      {/* <div className='mb-3 block'>
-        <TextInput
-          {...register('make', { required: 'Make is required' })}
-          placeholder='Make'
-          color={errors?.make && 'failure'}
-          helperText={errors.make?.message as string}
+      <Input
+        label='Color'
+        name='color'
+        control={control}
+        rules={{ required: 'Color is required' }}
+      />
+      <div className='grid grid-cols-2 gap-3'>
+        <Input
+          label='Year'
+          name='year'
+          control={control}
+          rules={{ required: 'Year is required' }}
+          type='Number'
+        />
+        <Input
+          label='Mileage'
+          name='mileage'
+          control={control}
+          type='Number'
+          rules={{ required: 'Mileage is required' }}
         />
       </div>
-      <div className='mb-3 block'>
-        <TextInput
-          {...register('model', { required: 'Model is required' })}
-          placeholder='Model'
-          color={errors?.model && 'failure'}
-          helperText={errors.model?.message as string}
+      <Input
+        label='Image Url'
+        name='ImageUrl'
+        control={control}
+        rules={{ required: 'Image Url is required' }}
+      />
+
+      <div className='grid grid-cols-2 gap-3'>
+        <Input
+          label='Reserve Price (Enter 0 if no reserve)'
+          name='reservePrice'
+          control={control}
+          rules={{ required: 'Reserve Price is required' }}
+          type='number'
         />
-      </div> */}
+        <Input
+          label='Auction end Date/Time'
+          name='auctionEnd'
+          control={control}
+          type='date'
+          rules={{ required: 'Auction end date is required' }}
+        />
+      </div>
+
       <div className='flex justify-between'>
         <Button outline color='grey'>
           Cancel

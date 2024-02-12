@@ -1,10 +1,10 @@
 import { Label, TextInput } from 'flowbite-react';
-import React from 'react';
+import React, { HTMLInputTypeAttribute } from 'react';
 import { UseControllerProps, useController } from 'react-hook-form';
 
 type Props = {
   label: string;
-  type?: string;
+  type?: HTMLInputTypeAttribute;
   showLabel?: boolean;
 } & UseControllerProps;
 
