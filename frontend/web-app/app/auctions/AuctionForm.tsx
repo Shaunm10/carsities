@@ -3,6 +3,7 @@ import { Button, TextInput } from 'flowbite-react';
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/input';
+import DateInput from '../components/DateInput';
 
 export const AuctionForm = () => {
   'use client';
@@ -72,11 +73,11 @@ export const AuctionForm = () => {
           rules={{ required: 'Reserve Price is required' }}
           type='number'
         />
-        <Input
+        <DateInput
           label='Auction end Date/Time'
           name='auctionEnd'
           control={control}
-          type='date'
+          type='Date'
           rules={{ required: 'Auction end date is required' }}
         />
       </div>
