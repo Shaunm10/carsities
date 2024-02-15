@@ -1,6 +1,6 @@
 'use client';
 import { Button, TextInput } from 'flowbite-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/input';
 
@@ -12,10 +12,14 @@ export const AuctionForm = () => {
     control,
     setFocus,
     formState: { isDirty, isSubmitting, isValid, errors },
-  } = useForm();
+  } = useForm({ mode: 'onTouched' });
   function onSubmit(data: FieldValues) {
     console.log(data);
   }
+
+  useEffect(() => {
+    setFocus('make');
+  }, [setFocus]);
 
   return (
     <form className='flex flex-col mt-3' onSubmit={handleSubmit(onSubmit)}>
@@ -49,7 +53,7 @@ export const AuctionForm = () => {
           label='Mileage'
           name='mileage'
           control={control}
-          type='Number'
+          type='number'
           rules={{ required: 'Mileage is required' }}
         />
       </div>
