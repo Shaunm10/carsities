@@ -79,6 +79,8 @@ export const AuctionForm = () => {
           name='auctionEnd'
           control={control}
           type='Date'
+          dateFormat='dd MMMM yyy h:mm a'
+          showTimeSelect
           rules={{ required: 'Auction end date is required' }}
         />
       </div>
