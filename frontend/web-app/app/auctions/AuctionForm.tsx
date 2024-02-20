@@ -6,14 +6,15 @@ import Input from '../components/input';
 import DateInput from '../components/DateInput';
 
 export const AuctionForm = () => {
-  'use client';
   const {
-    register,
+    /**a wrapper around 'onsubmit' that this hook can use to verify how to submit a form */
     handleSubmit,
     control,
+    /**Allows us to default the focus on a control */
     setFocus,
     formState: { isDirty, isSubmitting, isValid, errors },
   } = useForm({ mode: 'onTouched' });
+
   function onSubmit(data: FieldValues) {
     console.log(data);
   }
