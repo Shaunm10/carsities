@@ -77,7 +77,9 @@ async function handleResponse(response: Response) {
       message: response.statusText,
     };
 
-    return error;
+    // this will give us the error property that can be checked by
+    // the consuming component.
+    return { error };
   }
 }
 

@@ -1,19 +1,11 @@
 'use server';
 import { Auction, PagedResults } from '@/types';
-import { getTokenWorkAround } from './authActions';
 import { fetchWrapper } from '@/lib/fetchWrapper';
+import { FieldValue, FieldValues } from 'react-hook-form';
 
+/**NOTE: these functions are all on the server. */
 export async function getData(query: string): Promise<PagedResults<Auction>> {
   return await fetchWrapper.get(`search${query}`);
-  // const res = await fetch(`http://localhost:6001/search${query}`);
-
-  // if (!res.ok) {
-  //   throw new Error('Unable to get data');
-  // }
-
-  // const json = await res.json();
-
-  // return json;
 }
 
 export async function updateAuctionTest() {
@@ -22,26 +14,12 @@ export async function updateAuctionTest() {
     milage: Math.floor(Math.random() * 100000) + 1,
   };
 
-  const token = await getTokenWorkAround();
-
-  const response = await fetch(
-    'http://localhost:6001/auctions/afbee524-5972-4075-8800-7d1f9d7b0a0c',
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token?.access_token}`,
-      }, // no way this will work until the header is added.
-      body: JSON.stringify(data),
-    }
+  return fetchWrapper.put(
+    `auctions/afbee524-5972-4075-8800-7d1f9d7b0a0c`,
+    data
   );
+}
 
-  if (!response.ok) {
-    return {
-      status: response.status,
-      message: response.statusText,
-    };
-  }
-
-  return response.statusText;
+export async function createAuction(data: FieldValues) {
+  return await fetchWrapper.post('auctions', data);
 }

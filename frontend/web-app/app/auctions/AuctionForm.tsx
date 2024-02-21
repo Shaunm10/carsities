@@ -4,8 +4,11 @@ import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/input';
 import DateInput from '../components/DateInput';
+import { createAuction } from '../actions/auctionActions';
+import { useRouter } from 'next/navigation';
 
 export const AuctionForm = () => {
+  const router = useRouter();
   const {
     /**a wrapper around 'onsubmit' that this hook can use to verify how to submit a form */
     handleSubmit,
@@ -15,8 +18,18 @@ export const AuctionForm = () => {
     formState: { isDirty, isSubmitting, isValid, errors },
   } = useForm({ mode: 'onTouched' });
 
-  function onSubmit(data: FieldValues) {
-    console.log(data);
+  async function onSubmit(data: FieldValues) {
+    try {
+      const res = await createAuction(data);
+      if (res.error) {
+        throw new Error(res.error);
+      }
+
+      // now navigate to the detail page.
+      router.push(`/auctions/details/${res.id}`);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
