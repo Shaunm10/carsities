@@ -3,7 +3,7 @@ import { getTokenWorkAround } from '@/app/actions/authActions';
 const baseUrl = 'http://localhost:6001/';
 
 async function put(url: string, body: {}) {
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: 'PUT',
     headers: await getHeaders(),
     body: JSON.stringify(body),
@@ -13,8 +13,18 @@ async function put(url: string, body: {}) {
   return await handleResponse(response);
 }
 
+async function del(url: string) {
+  const requestOptions: RequestInit = {
+    method: 'DELETE',
+    headers: await getHeaders(),
+  };
+
+  const response = await fetch(baseUrl + url, requestOptions);
+  return await handleResponse(response);
+}
+
 async function post(url: string, body: {}) {
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: 'POST',
     headers: await getHeaders(),
     body: JSON.stringify(body),
@@ -25,7 +35,7 @@ async function post(url: string, body: {}) {
 }
 
 async function get(url: string) {
-  const requestOptions = {
+  const requestOptions: RequestInit = {
     method: 'GET',
     headers: await getHeaders(),
   };
@@ -76,4 +86,5 @@ export const fetchWrapper = {
   get,
   post,
   put,
+  del,
 };
