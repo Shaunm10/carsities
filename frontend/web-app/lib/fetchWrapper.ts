@@ -2,7 +2,16 @@ import { getTokenWorkAround } from '@/app/actions/authActions';
 
 const baseUrl = 'http://localhost:6001/';
 
-//async function put(url: string, body:{}) {}
+async function put(url: string, body: {}) {
+  const requestOptions = {
+    method: 'PUT',
+    headers: await getHeaders(),
+    body: JSON.stringify(body),
+  };
+
+  const response = await fetch(baseUrl + url, requestOptions);
+  return await handleResponse(response);
+}
 
 async function post(url: string, body: {}) {
   const requestOptions = {
@@ -66,4 +75,5 @@ async function handleResponse(response: Response) {
 export const fetchWrapper = {
   get,
   post,
+  put,
 };
