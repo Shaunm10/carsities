@@ -9,6 +9,7 @@ type Props = {
 } & UseControllerProps;
 
 const Input = (props: Props) => {
+  /** Allows us to create custom inputs for react-hook-form */
   const { fieldState, field } = useController({ ...props, defaultValue: '' });
   const color = fieldState.error
     ? 'failure'
