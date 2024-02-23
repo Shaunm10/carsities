@@ -6,6 +6,7 @@ import Input from '../components/input';
 import DateInput from '../components/DateInput';
 import { createAuction } from '../actions/auctionActions';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export const AuctionForm = () => {
   const router = useRouter();
@@ -27,8 +28,8 @@ export const AuctionForm = () => {
 
       // now navigate to the detail page.
       router.push(`/auctions/details/${res.id}`);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toast.error(`${error.status} ${error.message}`);
     }
   }
 
