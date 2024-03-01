@@ -55,7 +55,7 @@ async function getHeaders() {
   } as any;
 
   if (token) {
-    //headers.Authorization = `Bearer ${token.access_token}`;
+    headers.Authorization = `Bearer ${token.access_token}`;
   }
 
   return headers;

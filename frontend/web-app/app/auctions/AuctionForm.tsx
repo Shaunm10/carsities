@@ -22,6 +22,9 @@ export const AuctionForm = () => {
   async function onSubmit(data: FieldValues) {
     try {
       const res = await createAuction(data);
+
+      // we are assuming there will be an error property
+      // if an issue occurred.
       if (res.error) {
         throw res.error;
       }
