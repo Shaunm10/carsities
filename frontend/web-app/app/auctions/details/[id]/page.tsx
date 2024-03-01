@@ -5,6 +5,8 @@ import React from 'react';
 import CountdownTimer from '../../CountdownTimer';
 import { CarImage } from '../../CarImage';
 import DetailedSpecs from './DetailedSpecs';
+import EditButton from './EditButton';
+import { getCurrentUser } from '@/app/actions/authActions';
 
 type props = { params: { id: string } };
 
@@ -12,12 +14,17 @@ type props = { params: { id: string } };
 // a server component.
 const Details = async ({ params }: props) => {
   const auction = await getDetailedViewData(params.id);
+  const user = await getCurrentUser();
+  const isUserOwnerOfAuction = user?.username === auction.seller;
 
   return (
     <div>
       {/* Header and countdown */}
       <div className='flex justify-between'>
-        <Heading title={`${auction.make} ${auction.model}`} />
+        <div className='flex items-center gap-3'>
+          <Heading title={`${auction.make} ${auction.model}`} />
+          {isUserOwnerOfAuction && <EditButton id={auction.id} />}
+        </div>
         <div className='flex gap-3'>
           <h3 className='text-2x1 font-semibold'>Time remaining:</h3>
           <CountdownTimer auctionEnd={auction.auctionEnd} />

@@ -4,24 +4,45 @@ import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import Input from '../components/input';
 import DateInput from '../components/DateInput';
-import { createAuction } from '../actions/auctionActions';
-import { useRouter } from 'next/navigation';
+import { createAuction, updateAuction } from '../actions/auctionActions';
+import { usePathname, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Auction } from '@/types';
 
-export const AuctionForm = () => {
+type Props = {
+  auction?: Auction;
+};
+
+export const AuctionForm = ({ auction }: Props) => {
   const router = useRouter();
+  const pathName = usePathname();
+  /**
+   * If this is in `new` mode as opposed to an `update` to
+   * an existing auction.
+   */
+  const isPostingNewAuction = !auction;
+
   const {
     /**a wrapper around 'onsubmit' that this hook can use to verify how to submit a form */
     handleSubmit,
     control,
     /**Allows us to default the focus on a control */
     setFocus,
+    reset,
     formState: { isDirty, isSubmitting, isValid, errors },
   } = useForm({ mode: 'onTouched' });
 
   async function onSubmit(data: FieldValues) {
     try {
-      const res = await createAuction(data);
+      let res;
+      let id = '';
+      if (isPostingNewAuction) {
+        res = await createAuction(data);
+        id = res.id;
+      } else {
+        res = await updateAuction(auction.id, data);
+        id = auction.id;
+      }
 
       // we are assuming there will be an error property
       // if an issue occurred.
@@ -30,13 +51,19 @@ export const AuctionForm = () => {
       }
 
       // now navigate to the detail page.
-      router.push(`/auctions/details/${res.id}`);
+      router.push(`/auctions/details/${id}`);
     } catch (error: any) {
       toast.error(`${error.status} ${error.message}`);
     }
   }
 
   useEffect(() => {
+    if (!isPostingNewAuction) {
+      // we are using the reset function to set the initial value
+      // when an auction is passed in.
+      const { make, model, color, mileage, year } = auction;
+      reset({ make, model, color, mileage, year });
+    }
     setFocus('make');
   }, [setFocus]);
 
@@ -76,32 +103,35 @@ export const AuctionForm = () => {
           rules={{ required: 'Mileage is required' }}
         />
       </div>
-      <Input
-        label='Image Url'
-        name='ImageUrl'
-        control={control}
-        rules={{ required: 'Image Url is required' }}
-      />
+      {isPostingNewAuction && (
+        <>
+          <Input
+            label='Image Url'
+            name='ImageUrl'
+            control={control}
+            rules={{ required: 'Image Url is required' }}
+          />
 
-      <div className='grid grid-cols-2 gap-3'>
-        <Input
-          label='Reserve Price (Enter 0 if no reserve)'
-          name='reservePrice'
-          control={control}
-          rules={{ required: 'Reserve Price is required' }}
-          type='number'
-        />
-        <DateInput
-          label='Auction end Date/Time'
-          name='auctionEnd'
-          control={control}
-          type='Date'
-          dateFormat='dd MMMM yyy h:mm a'
-          showTimeSelect
-          rules={{ required: 'Auction end date is required' }}
-        />
-      </div>
-
+          <div className='grid grid-cols-2 gap-3'>
+            <Input
+              label='Reserve Price (Enter 0 if no reserve)'
+              name='reservePrice'
+              control={control}
+              rules={{ required: 'Reserve Price is required' }}
+              type='number'
+            />
+            <DateInput
+              label='Auction end Date/Time'
+              name='auctionEnd'
+              control={control}
+              type='Date'
+              dateFormat='dd MMMM yyy h:mm a'
+              showTimeSelect
+              rules={{ required: 'Auction end date is required' }}
+            />
+          </div>
+        </>
+      )}
       <div className='flex justify-between'>
         <Button outline color='grey'>
           Cancel

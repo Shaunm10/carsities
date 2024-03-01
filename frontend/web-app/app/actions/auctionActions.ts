@@ -2,6 +2,7 @@
 import { Auction, PagedResults } from '@/types';
 import { fetchWrapper } from '@/lib/fetchWrapper';
 import { FieldValue, FieldValues } from 'react-hook-form';
+import { revalidatePath } from 'next/cache';
 
 /**NOTE: these functions are all on the server. */
 export async function getData(query: string): Promise<PagedResults<Auction>> {
@@ -26,4 +27,13 @@ export async function createAuction(data: FieldValues) {
 
 export async function getDetailedViewData(id: string): Promise<Auction> {
   return await fetchWrapper.get(`auctions/${id}`);
+}
+
+export async function updateAuction(id: string, data: FieldValues) {
+  const res = await fetchWrapper.put(`auctions/${id}`, data);
+
+  // force the auction's cache to be cleared.
+  revalidatePath(`/auctions/${id}`);
+
+  return res;
 }
