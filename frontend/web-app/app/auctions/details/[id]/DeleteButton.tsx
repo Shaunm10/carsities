@@ -12,25 +12,26 @@ const DeleteButton = ({ id }: Props) => {
   const router = useRouter();
 
   async function onDeleteClick() {
-    setLoading(true);
+    if (confirm('Are you sure you want to delete this Auction?')) {
+      setLoading(true);
+      try {
+        const res = await deleteAuction(id);
 
-    try {
-      const res = await deleteAuction(id);
-
-      if (res.error) {
-        throw res.error;
+        if (res.error) {
+          throw res.error;
+        }
+        router.push(`/`);
+      } catch (err: any) {
+        toast.error(err.status + ' ' + err.message);
+      } finally {
+        setLoading(false);
       }
-      router.push(`/`);
-    } catch (err: any) {
-      toast.error(err.status + ' ' + err.message);
-    } finally {
-      setLoading(false);
     }
   }
 
   const [loading, setLoading] = useState(false);
   return (
-    <Button onClick={onDeleteClick} outline isProcessing={loading}>
+    <Button color='failure' onClick={onDeleteClick} isProcessing={loading}>
       Delete Auction
     </Button>
   );

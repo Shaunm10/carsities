@@ -27,7 +27,7 @@ const Details = async ({ params }: props) => {
           {isUserOwnerOfAuction && (
             <>
               <EditButton id={auction.id} />
-              <DeleteButton auctionId={auction.id} />
+              <DeleteButton id={auction.id} />
             </>
           )}
         </div>

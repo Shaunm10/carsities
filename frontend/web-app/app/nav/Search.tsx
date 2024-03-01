@@ -1,9 +1,12 @@
 'use client';
 import { useParamsStore } from '@/hooks/useParamsStore';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 export const Search = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const setParams = useParamsStore((state) => state.setParams);
   //const [searchInput, setSearchInput] = useState('');
 
@@ -13,13 +16,18 @@ export const Search = () => {
   /** What we use to *Read* the search value */
   const searchValue = useParamsStore((state) => state.searchValue);
 
-  search;
+  //search;
   function searchOnChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchValue(event.target.value);
     //setSearchInput(event.target.value);
   }
 
   function search() {
+    // if they are not on the home page
+    if (pathname !== '/') {
+      // than send them back.
+      router.push('/');
+    }
     setParams({ searchTerm: searchValue });
   }
 
