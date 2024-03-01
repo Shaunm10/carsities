@@ -22,6 +22,8 @@ export const Listings = () => {
       pageSize: state.pageSize,
       orderBy: state.orderBy,
       filterBy: state.filterBy,
+      seller: state.seller,
+      winner: state.winner,
     }),
     shallow
   );
