@@ -7,6 +7,7 @@ import { CarImage } from '../../CarImage';
 import DetailedSpecs from './DetailedSpecs';
 import EditButton from './EditButton';
 import { getCurrentUser } from '@/app/actions/authActions';
+import DeleteButton from './DeleteButton';
 
 type props = { params: { id: string } };
 
@@ -23,7 +24,12 @@ const Details = async ({ params }: props) => {
       <div className='flex justify-between'>
         <div className='flex items-center gap-3'>
           <Heading title={`${auction.make} ${auction.model}`} />
-          {isUserOwnerOfAuction && <EditButton id={auction.id} />}
+          {isUserOwnerOfAuction && (
+            <>
+              <EditButton id={auction.id} />
+              <DeleteButton auctionId={auction.id} />
+            </>
+          )}
         </div>
         <div className='flex gap-3'>
           <h3 className='text-2x1 font-semibold'>Time remaining:</h3>
