@@ -39,8 +39,11 @@ Build a docker image via the docker compose
 | Auction Service  | http://localhost:7001 |
 | Search Service   | http://localhost:7002 |
 | Identity Service | http://localhost:5000 |
+| Bidding Service  | http://localhost:7003 |
 | Gateway Service  | http://localhost:6001 |
 | Next.js App      | http://localhost:3000 |
+
+
 
 ## Management Urls
 
