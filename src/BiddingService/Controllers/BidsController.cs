@@ -30,28 +30,47 @@ public class BidsController : ControllerBase
             return BadRequest("You cannot bid on your own auction");
         }
 
-        var bid = CreateAuction(auctionId, amount);
+        var bid = CreateBid(auctionId, amount);
 
-        if (auction.AuctionEnd < DateTime.UtcNow)
-        {
-            bid.BidStatus = BidStatus.Finished;
-        }
+        // determine this bid's Status
+        bid.BidStatus = await this.CalculateBidStatusAsync(auction, amount, bid);
 
-        Bid highBid = await this.GetHighestBidAsync(auctionId);
-
-        if (highBid != null && amount > highBid.Amount || highBid == null)
-        {
-            bid.BidStatus = amount > auction.ReservePrice ? BidStatus.Accepted : BidStatus.AcceptedBelowReserve;
-        }
-
-        if (highBid != null && bid.Amount < highBid.Amount)
-        {
-            bid.BidStatus = BidStatus.TooLow;
-        }
-
+        // save it to persistance.
         await DB.InsertAsync(bid);
 
         return this.Ok();
+    }
+
+    [HttpGet("{auctionId}")]
+    public async Task<ActionResult<List<Bid>>> GetBidsForAuction(string auction)
+    {
+        return new List<Bid>();
+    }
+
+    private async Task<BidStatus> CalculateBidStatusAsync(Auction auction, decimal amount, Bid bid)
+    {
+        BidStatus returnBidStatus = BidStatus.TooLow;
+
+        if (auction.AuctionEnd < DateTime.UtcNow)
+        {
+            returnBidStatus = BidStatus.Finished;
+        }
+        else
+        {
+            Bid highBid = await this.GetHighestBidAsync(auction.ID);
+
+            if (highBid != null && amount > highBid.Amount || highBid == null)
+            {
+                returnBidStatus = amount > auction.ReservePrice ? BidStatus.Accepted : BidStatus.AcceptedBelowReserve;
+            }
+
+            if (highBid != null && bid.Amount < highBid.Amount)
+            {
+                returnBidStatus = BidStatus.TooLow;
+            }
+        }
+
+        return returnBidStatus;
     }
 
     private async Task<Bid> GetHighestBidAsync(string auctionId)
@@ -64,7 +83,7 @@ public class BidsController : ControllerBase
         return highBid;
     }
 
-    private Bid CreateAuction(string auctionId, decimal amount)
+    private Bid CreateBid(string auctionId, decimal amount)
     {
         return new Bid
         {
