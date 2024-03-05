@@ -42,11 +42,18 @@ public class BidsController : ControllerBase
     }
 
     [HttpGet("{auctionId}")]
-    public async Task<ActionResult<List<Bid>>> GetBidsForAuction(string auction)
+    public async Task<ActionResult<List<Bid>>> GetBidsForAuction(string auctionId)
     {
-        return new List<Bid>();
+        var bids = await DB.Find<Bid>()
+            .Match(x => x.AuctionId == auctionId)
+            .Sort(x => x.Descending(y => y.BidTime))
+            .ExecuteAsync();
+
+        return bids;
     }
 
+
+    // TODO: put these in business service.
     private async Task<BidStatus> CalculateBidStatusAsync(Auction auction, decimal amount, Bid bid)
     {
         BidStatus returnBidStatus = BidStatus.TooLow;
