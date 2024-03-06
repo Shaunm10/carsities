@@ -1,4 +1,6 @@
-﻿using BiddingService.PersistanceModels;
+﻿using AutoMapper;
+using BiddingService.PersistanceModels;
+using BiddingService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
@@ -9,13 +11,16 @@ namespace BiddingService;
 [Route("api/[controller]")]
 public class BidsController : ControllerBase
 {
-    public BidsController()
+    private readonly IMapper mapper;
+
+    public BidsController(IMapper mapper)
     {
+        this.mapper = mapper;
     }
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Bid>> PlaceBid(string auctionId, decimal amount)
+    public async Task<ActionResult<BidDto>> PlaceBid(string auctionId, decimal amount)
     {
         var auction = await DB.Find<Auction>().OneAsync(auctionId);
 
@@ -39,18 +44,18 @@ public class BidsController : ControllerBase
         // save it to persistance.
         await DB.InsertAsync(bid);
 
-        return this.Ok(bid);
+        return this.Ok(this.mapper.Map<BidDto>(bid));
     }
 
     [HttpGet("{auctionId}")]
-    public async Task<ActionResult<List<Bid>>> GetBidsForAuction(string auctionId)
+    public async Task<ActionResult<List<BidDto>>> GetBidsForAuction(string auctionId)
     {
         var bids = await DB.Find<Bid>()
             .Match(x => x.AuctionId == auctionId)
             .Sort(x => x.Descending(y => y.BidTime))
             .ExecuteAsync();
 
-        return bids;
+        return bids.Select(this.mapper.Map<BidDto>).ToList();
     }
 
 
@@ -99,7 +104,6 @@ public class BidsController : ControllerBase
             AuctionId = auctionId,
             Bidder = User.Identity.Name
         };
-
     }
 
     private bool DoesAuctionBelongToSeller(Auction auction)
