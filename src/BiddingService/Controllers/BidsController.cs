@@ -19,7 +19,7 @@ public class BidsController : ControllerBase
     {
         var auction = await DB.Find<Auction>().OneAsync(auctionId);
 
-        if (auction != null)
+        if (auction == null)
         {
             // TODO: check with auction service if that has the auction
             return NotFound();
@@ -39,7 +39,7 @@ public class BidsController : ControllerBase
         // save it to persistance.
         await DB.InsertAsync(bid);
 
-        return this.Ok();
+        return this.Ok(bid);
     }
 
     [HttpGet("{auctionId}")]
