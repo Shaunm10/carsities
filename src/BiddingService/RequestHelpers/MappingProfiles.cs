@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using BiddingService.BusinessServices.ViewModels;
 using BiddingService.PersistanceModels;
-using BiddingService.ViewModels;
 
 namespace BiddingService.MappingProfiles;
 

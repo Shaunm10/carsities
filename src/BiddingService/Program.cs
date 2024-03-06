@@ -1,3 +1,4 @@
+using BiddingService.BusinessServices;
 using BiddingService.Consumers;
 using MassTransit;
 using MessageContracts.Auction;
@@ -43,6 +44,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters.NameClaimType = "username";
     });
 
+
+builder.Services.AddSingleton<IAuctionService, AuctionService>();
+builder.Services.AddSingleton<IBidService, BidService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

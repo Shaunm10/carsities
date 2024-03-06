@@ -1,4 +1,4 @@
-﻿namespace BiddingService.ViewModels;
+﻿namespace BiddingService.BusinessServices.ViewModels;
 
 public class BidDto
 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using BiddingService.BusinessServices;
+using BiddingService.BusinessServices.ViewModels;
 using BiddingService.PersistanceModels;
-using BiddingService.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
@@ -12,17 +13,24 @@ namespace BiddingService;
 public class BidsController : ControllerBase
 {
     private readonly IMapper mapper;
+    private readonly IAuctionService auctionService;
+    private readonly IBidService bidService;
 
-    public BidsController(IMapper mapper)
+    public BidsController(
+        IMapper mapper,
+        IAuctionService auctionService,
+        IBidService bidService)
     {
         this.mapper = mapper;
+        this.auctionService = auctionService;
+        this.bidService = bidService;
     }
 
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<BidDto>> PlaceBid(string auctionId, decimal amount)
     {
-        var auction = await DB.Find<Auction>().OneAsync(auctionId);
+        var auction = await this.auctionService.GetAuctionAsync(auctionId);
 
         if (auction == null)
         {
@@ -36,13 +44,7 @@ public class BidsController : ControllerBase
             return BadRequest("You cannot bid on your own auction");
         }
 
-        var bid = CreateBid(auctionId, amount);
-
-        // determine this bid's Status
-        bid.BidStatus = await this.CalculateBidStatusAsync(auction, amount, bid);
-
-        // save it to persistance.
-        await DB.InsertAsync(bid);
+        BidDto bid = await this.bidService.SaveAsync(auction, amount, this.User);
 
         return this.Ok(this.mapper.Map<BidDto>(bid));
     }
@@ -58,53 +60,6 @@ public class BidsController : ControllerBase
         return bids.Select(this.mapper.Map<BidDto>).ToList();
     }
 
-
-    // TODO: put these in business service.
-    private async Task<BidStatus> CalculateBidStatusAsync(Auction auction, decimal amount, Bid bid)
-    {
-        BidStatus returnBidStatus = BidStatus.TooLow;
-
-        if (auction.AuctionEnd < DateTime.UtcNow)
-        {
-            returnBidStatus = BidStatus.Finished;
-        }
-        else
-        {
-            Bid highBid = await this.GetHighestBidAsync(auction.ID);
-
-            if (highBid != null && amount > highBid.Amount || highBid == null)
-            {
-                returnBidStatus = amount > auction.ReservePrice ? BidStatus.Accepted : BidStatus.AcceptedBelowReserve;
-            }
-
-            if (highBid != null && bid.Amount < highBid.Amount)
-            {
-                returnBidStatus = BidStatus.TooLow;
-            }
-        }
-
-        return returnBidStatus;
-    }
-
-    private async Task<Bid> GetHighestBidAsync(string auctionId)
-    {
-        var highBid = await DB.Find<Bid>()
-         .Match(x => x.AuctionId == auctionId)
-         .Sort(x => x.Descending(y => y.Amount))
-         .ExecuteFirstAsync();
-
-        return highBid;
-    }
-
-    private Bid CreateBid(string auctionId, decimal amount)
-    {
-        return new Bid
-        {
-            Amount = amount,
-            AuctionId = auctionId,
-            Bidder = User.Identity.Name
-        };
-    }
 
     private bool DoesAuctionBelongToSeller(Auction auction)
     {
