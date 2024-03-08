@@ -1,3 +1,4 @@
+using BiddingService.BackgroundServices;
 using BiddingService.BusinessServices;
 using BiddingService.Consumers;
 using MassTransit;
@@ -53,6 +54,7 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHostedService<CheckAuctionFinished>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
