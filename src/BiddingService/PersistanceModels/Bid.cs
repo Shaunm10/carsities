@@ -8,6 +8,6 @@ public class Bid : Entity
 
     public string Bidder { get; set; }
     public DateTime BidTime { get; set; } = DateTime.UtcNow;
-    public decimal Amount { get; set; }
+    public decimal? Amount { get; set; }
     public BidStatus BidStatus { get; set; }
 }

@@ -38,15 +38,15 @@ public class BidsController : ControllerBase
             return NotFound();
         }
 
-        if (this.DoesAuctionBelongToSeller(auction))
+        if (this.DoesAuctionBelongToCurrentUser(auction))
         {
             // this is to prevent a user from pumping up the price of their own bid.
             return BadRequest("You cannot bid on your own auction");
         }
 
-        BidDto bid = await this.bidService.SaveAsync(auction, amount, this.User);
+        var bid = await this.bidService.SaveAsync(auction, amount, this.User);
 
-        return this.Ok(this.mapper.Map<BidDto>(bid));
+        return this.Ok(bid);
     }
 
     [HttpGet("{auctionId}")]
@@ -61,7 +61,7 @@ public class BidsController : ControllerBase
     }
 
 
-    private bool DoesAuctionBelongToSeller(Auction auction)
+    private bool DoesAuctionBelongToCurrentUser(Auction auction)
     {
         return auction.Seller == User.Identity.Name;
     }

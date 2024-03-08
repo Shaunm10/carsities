@@ -2,6 +2,8 @@
 using AutoMapper;
 using BiddingService.BusinessServices.ViewModels;
 using BiddingService.PersistanceModels;
+using MassTransit;
+using MessageContracts.Bid;
 using MongoDB.Entities;
 
 namespace BiddingService.BusinessServices;
@@ -9,10 +11,12 @@ namespace BiddingService.BusinessServices;
 public class BidService : IBidService
 {
     private readonly IMapper mapper;
+    private readonly IPublishEndpoint publishEndpoint;
 
-    public BidService(IMapper mapper)
+    public BidService(IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         this.mapper = mapper;
+        this.publishEndpoint = publishEndpoint;
     }
 
     public async Task<BidDto> SaveAsync(Auction auction, decimal amount, ClaimsPrincipal user)
@@ -22,9 +26,12 @@ public class BidService : IBidService
         // determine this bid's Status
         bid.BidStatus = await this.CalculateBidStatusAsync(auction, amount, bid);
 
-        // save it to persistance.
+        // save it to persistance (mongo).
         await DB.InsertAsync(bid);
 
+        // make sure the auction + search service knows about this bid.
+        await this.publishEndpoint.Publish(this.mapper.Map<BidPlaced>(bid));
+        
         return this.mapper.Map<BidDto>(bid);
     }
 
