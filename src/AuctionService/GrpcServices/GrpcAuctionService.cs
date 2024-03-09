@@ -32,6 +32,7 @@ public class GrpcAuctionService : GrpcAuction.GrpcAuctionBase
             {
                 AuctionEnd = auction.AuctionEnd.ToString(),
                 Id = auction.Id.ToString(),
+                // this should be changed to stay as a Decimal.
                 ReservePrice = Convert.ToInt32(auction.ReservePrice),
                 Seller = auction.Seller
             }
