@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BiddingService.BusinessServices;
 using BiddingService.BusinessServices.ViewModels;
+using BiddingService.GrpcServices;
 using BiddingService.PersistanceModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,18 @@ public class BidsController : ControllerBase
     private readonly IMapper mapper;
     private readonly IAuctionService auctionService;
     private readonly IBidService bidService;
+    private readonly GrpcAuctionClient grpcAuctionClient;
 
     public BidsController(
         IMapper mapper,
         IAuctionService auctionService,
-        IBidService bidService)
+        IBidService bidService,
+        GrpcAuctionClient grpcAuctionClient)
     {
         this.mapper = mapper;
         this.auctionService = auctionService;
         this.bidService = bidService;
+        this.grpcAuctionClient = grpcAuctionClient;
     }
 
     [Authorize]
@@ -32,10 +36,15 @@ public class BidsController : ControllerBase
     {
         var auction = await this.auctionService.GetAuctionAsync(auctionId);
 
-        if (auction == null)
+        if (auction is null)
         {
-            // TODO: check with auction service if that has the auction
-            return NotFound();
+            // than call the auction service over Grpc to try and get it.
+            auction = await this.grpcAuctionClient.GetAuctionAsync(auctionId);
+
+            if (auction is null)
+            {
+                return BadRequest($"Unable to find auction with Id {auctionId}");
+            }
         }
 
         if (this.DoesAuctionBelongToCurrentUser(auction))

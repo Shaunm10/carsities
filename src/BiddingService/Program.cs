@@ -1,6 +1,7 @@
 using BiddingService.BackgroundServices;
 using BiddingService.BusinessServices;
 using BiddingService.Consumers;
+using BiddingService.GrpcServices;
 using MassTransit;
 using MessageContracts.Auction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -46,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-builder.Services.AddScoped<IAuctionService, AuctionService>();
+builder.Services.AddScoped<IAuctionService, BiddingService.BusinessServices.AuctionService>();
 builder.Services.AddScoped<IBidService, BidService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -55,6 +56,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHostedService<CheckAuctionFinished>();
+
+builder.Services.AddScoped<GrpcAuctionClient>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
