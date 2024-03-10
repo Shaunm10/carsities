@@ -17,7 +17,7 @@ public class BidPlacedConsumer : IConsumer<BidPlaced>
         if (auction is not null)
         {
             var isBidAccepted = context.Message.BidStatus?.Contains(BidStatuses.Accepted) ?? false;
-            if (isBidAccepted && context.Message.Amount > auction.CurrentHighBid)
+            if (isBidAccepted && context.Message.Amount > auction.CurrentHighBid.GetValueOrDefault())
             {
                 auction.CurrentHighBid = context.Message.Amount;
                 await auction.SaveAsync();
