@@ -14,6 +14,7 @@ COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.
 COPY tests/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj tests/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj
 COPY tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj
 COPY tests/SearchService.UnitTests/SearchService.UnitTests.csproj tests/SearchService.UnitTests/SearchService.UnitTests.csproj
+COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 
 # restore packages
 RUN dotnet restore Carsities.sln

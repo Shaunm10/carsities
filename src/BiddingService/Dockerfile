@@ -6,6 +6,7 @@ EXPOSE 80
 # for every dockerfile in the project to take advantage of docker cacheing
 COPY Carsities.sln Carsities.sln
 COPY src/AuctionService/AuctionService.csproj src/AuctionService/AuctionService.csproj
+COPY src/NotificationService/NotificationService.csproj src/NotificationService/NotificationService.csproj
 COPY src/SearchService/SearchService.csproj src/SearchService/SearchService.csproj
 COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.csproj
 COPY src/MessageContracts/MessageContracts.csproj src/MessageContracts/MessageContracts.csproj
@@ -14,8 +15,6 @@ COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.
 COPY tests/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj tests/AuctionService.IntegrationTests/AuctionService.IntegrationTests.csproj
 COPY tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj tests/AuctionService.UnitTests/AuctionService.UnitTests.csproj
 COPY tests/SearchService.UnitTests/SearchService.UnitTests.csproj tests/SearchService.UnitTests/SearchService.UnitTests.csproj
-
-
 
 
 # restore packages
