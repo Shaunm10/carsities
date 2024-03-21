@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { AuctionCard } from './AuctionCard';
-import { Auction, PagedResults } from '@/types';
 import { AppPagination } from '../components/AppPagination';
 import { getData } from '../actions/auctionActions';
 import { Filters } from './Filters';
@@ -13,8 +12,7 @@ import { EmptyFilter } from '../components/EmptyFilter';
 import { useAuctionStore } from '@/hooks/useAuctionStore';
 
 export const Listings = () => {
-  // const [data, setData] = useState<PagedResults<Auction>>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const params = useParamsStore(
     (state) => ({
@@ -56,11 +54,11 @@ export const Listings = () => {
     getData(url).then((data) => {
       // and set the data.
       setData(data);
-      setLoading(false);
+      setIsLoading(false);
     });
   }, [url]);
 
-  if (loading) {
+  if (isLoading) {
     return <h3>Loading...</h3>;
   }
 

@@ -19,7 +19,7 @@ const initialState: State = {
 };
 
 /**
- * The export that contains the `Reducer` and selector functionality
+ * The export that contains the `Reducer` and `selector` functionality
  */
 export const useAuctionStore = create<State & Actions>((set) => ({
   ...initialState,

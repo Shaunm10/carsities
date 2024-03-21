@@ -13,7 +13,15 @@ const CurrentBid = ({ amount, reservePrice }: Props) => {
       : 'bg-amber-600'
     : 'bg-red-600';
 
-  return <div>CurrentBid</div>;
+  return (
+    <div
+      className={`
+      border-2 border-white text-white py-1
+      px-2 rounded-lg flex justify-center ${color}`}
+    >
+      {text}
+    </div>
+  );
 };
 
 export default CurrentBid;
