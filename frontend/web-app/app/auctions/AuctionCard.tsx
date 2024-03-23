@@ -14,7 +14,7 @@ export const AuctionCard = ({ auction }: Props) => {
           <div className='absolute bottom-2 left-2'>
             <CountdownTimer auctionEnd={auction.auctionEnd} />
           </div>
-          <div className='absolute top-2 bottom-2'>
+          <div className='absolute right-2 top-2'>
             <CurrentBid
               reservePrice={auction.reservePrice}
               amount={auction.currentHighBid}
